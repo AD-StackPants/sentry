@@ -26,7 +26,7 @@ async def list_issues(
             endpoint=endpoint
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to list issues: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to list issues: {str(e)}") from e
 
 @router.post(
     "/audit/export/pdf",
@@ -43,4 +43,4 @@ async def export_pdf(
             issue_ids=payload.issue_ids
         )
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to generate PDF report: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to generate PDF report: {str(e)}") from e

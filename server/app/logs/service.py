@@ -3,20 +3,60 @@ import json
 import re
 from datetime import UTC, datetime, timedelta
 
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.logs.exceptions import LogNotFoundError, LogStoreError
+from app.logs.models import LogModel
 from app.logs.schemas import LogCreate
 from app.shared.cache import Cache
 
 
+def serialize_log(log: LogModel) -> dict:
+    created_at_val = log.created_at
+    if isinstance(created_at_val, datetime):
+        iso_created_at = created_at_val.isoformat()
+    else:
+        iso_created_at = (
+            str(created_at_val)
+            if created_at_val
+            else datetime.now(UTC).isoformat()
+        )
+
+    return {
+        "id": log.id,
+        "service": log.service,
+        "environment": log.environment,
+        "level": log.level,
+        "log_message": log.log_message,
+        "trace_id": log.trace_id,
+        "metadata": log.log_metadata,
+        "created_at": iso_created_at,
+    }
+
+
 class LogService:
     @staticmethod
-    async def create_log(log_data: LogCreate):
-        result = await supabase.table("logs").insert(log_data.model_dump()).execute()
-        if not result.data:
-            raise LogStoreException("Failed to insert log")
+    async def create_log(db: AsyncSession, log_data: LogCreate) -> dict:
+        try:
+            dump = log_data.model_dump()
+            log = LogModel(
+                service=dump["service"],
+                environment=dump["environment"],
+                level=dump["level"],
+                log_message=dump["log_message"],
+                trace_id=dump.get("trace_id"),
+                log_metadata=dump.get("metadata"),
+            )
+            db.add(log)
+            await db.commit()
+            await db.refresh(log)
+        except Exception as e:
+            await db.rollback()
+            raise LogStoreError(f"Failed to insert log: {e}") from e
 
-        log = result.data[0]
         await Cache.forget("logs:service::level:")
-        cache_key = f"logs:service:{log.get('service')}:level:{log.get('level')}"
+        cache_key = f"logs:service:{log.service}:level:{log.level}"
         await Cache.forget(cache_key)
         # Clear stats cache if any
         await Cache.forget("logs:stats")
@@ -24,52 +64,63 @@ class LogService:
         await Cache.forget("logs:issues")
         await Cache.forget("logs:alerts")
         await Cache.forget("logs:reports")
-        return log
+        return serialize_log(log)
 
     @staticmethod
-    async def list_logs(service: str = None, level: str = None):
+    async def list_logs(
+        db: AsyncSession, service: str | None = None, level: str | None = None
+    ) -> list[dict]:
         cache_key = f"logs:service:{service}:level:{level}"
         cached_data = await Cache.get(cache_key)
         if cached_data:
             return json.loads(cached_data)
 
         limit = 100
-        query = (
-            supabase.table("logs").select("*").order("created_at", desc=True).limit(limit)
-        )
+        query = select(LogModel).order_by(LogModel.created_at.desc()).limit(limit)
 
         if service:
-            query = query.eq("service", service)
+            query = query.where(LogModel.service == service)
         if level:
-            query = query.eq("level", level)
+            query = query.where(LogModel.level == level)
 
-        result = await query.execute()
-        await Cache.set(cache_key, json.dumps(result.data), expire_seconds=10) # reduced expire for faster frontend reactivity
-        return result.data
+        result = await db.execute(query)
+        logs = result.scalars().all()
+        data = [serialize_log(log) for log in logs]
+        await Cache.set(cache_key, json.dumps(data), expire_seconds=10)
+        return data
 
     @staticmethod
-    async def get_log(log_id: str):
+    async def get_log(db: AsyncSession, log_id: str) -> dict:
         cached_data = await Cache.get(f"log:{log_id}")
         if cached_data:
             return json.loads(cached_data)
 
-        response = (
-            await supabase.table("logs").select("*").eq("id", log_id).single().execute()
-        )
-        
-        await Cache.set(f"log:{log_id}", json.dumps(response.data), expire_seconds=60)
-        return response.data
-    
+        query = select(LogModel).where(LogModel.id == log_id)
+        result = await db.execute(query)
+        log = result.scalar_one_or_none()
+        if not log:
+            raise LogNotFoundError(f"Log with id {log_id} not found")
+
+        data = serialize_log(log)
+        await Cache.set(f"log:{log_id}", json.dumps(data), expire_seconds=60)
+        return data
+
     @staticmethod
-    async def delete_log(log_id: str):
-        response = (
-            await supabase.table("logs").select("*").eq("id", log_id).single().execute()
-        )
-        log = response.data
-        await supabase.table("logs").delete().eq("id", log.get("id")).execute()
+    async def delete_log(db: AsyncSession, log_id: str) -> bool:
+        query = select(LogModel).where(LogModel.id == log_id)
+        result = await db.execute(query)
+        log = result.scalar_one_or_none()
+        if not log:
+            raise LogNotFoundError(f"Log with id {log_id} not found")
+
+        svc = log.service
+        lvl = log.level
+        await db.delete(log)
+        await db.commit()
+
         await Cache.forget("logs:service::level:")
-        await Cache.forget(f"logs:service:{log.get('service')}:level:{log.get('level')}")
-        await Cache.forget(f"log:{log.get('id')}")
+        await Cache.forget(f"logs:service:{svc}:level:{lvl}")
+        await Cache.forget(f"log:{log_id}")
         await Cache.forget("logs:stats")
         await Cache.forget("logs:trends")
         await Cache.forget("logs:issues")
@@ -78,53 +129,57 @@ class LogService:
         return True
 
     @staticmethod
-    async def get_stats():
+    async def get_stats(db: AsyncSession) -> dict:
         cached_data = await Cache.get("logs:stats")
         if cached_data:
             return json.loads(cached_data)
 
-        response = await supabase.table("logs").select("*").execute()
-        logs = response.data or []
-        
+        query = select(LogModel)
+        result = await db.execute(query)
+        logs = result.scalars().all()
+
         total_count = len(logs)
-        by_level = {}
-        by_service = {}
-        by_environment = {}
-        
+        by_level: dict[str, int] = {}
+        by_service: dict[str, int] = {}
+        by_environment: dict[str, int] = {}
+
         for log in logs:
-            lvl = log.get("level", "INFO").upper()
-            svc = log.get("service", "unknown")
-            env = log.get("environment", "unknown")
-            
+            lvl = (log.level or "INFO").upper()
+            svc = log.service or "unknown"
+            env = log.environment or "unknown"
+
             by_level[lvl] = by_level.get(lvl, 0) + 1
             by_service[svc] = by_service.get(svc, 0) + 1
             by_environment[env] = by_environment.get(env, 0) + 1
-            
+
         error_count = by_level.get("ERROR", 0) + by_level.get("CRITICAL", 0)
-        error_rate = (error_count / total_count * 100) if total_count > 0 else 0.0
-        
+        error_rate = (
+            (error_count / total_count * 100) if total_count > 0 else 0.0
+        )
+
         stats = {
             "total_count": total_count,
             "by_level": by_level,
             "by_service": by_service,
             "by_environment": by_environment,
-            "error_rate": round(error_rate, 2)
+            "error_rate": round(error_rate, 2),
         }
-        
+
         await Cache.set("logs:stats", json.dumps(stats), expire_seconds=10)
         return stats
 
     @staticmethod
-    async def get_trends():
+    async def get_trends(db: AsyncSession) -> list[dict]:
         cached_data = await Cache.get("logs:trends")
         if cached_data:
             return json.loads(cached_data)
 
-        response = await supabase.table("logs").select("*").execute()
-        logs = response.data or []
-        
+        query = select(LogModel)
+        result = await db.execute(query)
+        logs = result.scalars().all()
+
         now = datetime.now(UTC)
-        buckets = {}
+        buckets: dict[str, dict] = {}
         for i in range(24):
             dt = now - timedelta(hours=i)
             key = dt.strftime("%Y-%m-%d %H:00")
@@ -133,26 +188,29 @@ class LogService:
                 "info_count": 0,
                 "warning_count": 0,
                 "error_count": 0,
-                "total_count": 0
+                "total_count": 0,
             }
-            
+
         for log in logs:
-            ts_str = log.get("created_at")
-            if not ts_str:
+            log_dt = log.created_at
+            if not log_dt:
                 continue
-            
-            if ts_str.endswith("Z"):
-                ts_str = ts_str[:-1] + "+00:00"
-            try:
-                log_dt = datetime.fromisoformat(ts_str)
-            except Exception:
-                continue
-                
+            if isinstance(log_dt, str):
+                ts_str = log_dt
+                if ts_str.endswith("Z"):
+                    ts_str = ts_str[:-1] + "+00:00"
+                try:
+                    log_dt = datetime.fromisoformat(ts_str)
+                except Exception:
+                    continue
+            elif log_dt.tzinfo is None:
+                log_dt = log_dt.replace(tzinfo=UTC)
+
             diff = now - log_dt
             if diff.total_seconds() <= 24 * 3600:
                 key = log_dt.strftime("%Y-%m-%d %H:00")
                 if key in buckets:
-                    lvl = log.get("level", "INFO").upper()
+                    lvl = (log.level or "INFO").upper()
                     buckets[key]["total_count"] += 1
                     if lvl in ("ERROR", "CRITICAL"):
                         buckets[key]["error_count"] += 1
@@ -160,39 +218,52 @@ class LogService:
                         buckets[key]["warning_count"] += 1
                     else:
                         buckets[key]["info_count"] += 1
-                        
+
         sorted_buckets = sorted(buckets.values(), key=lambda x: x["timestamp"])
-        await Cache.set("logs:trends", json.dumps(sorted_buckets), expire_seconds=10)
+        await Cache.set(
+            "logs:trends", json.dumps(sorted_buckets), expire_seconds=10
+        )
         return sorted_buckets
 
     @staticmethod
-    async def get_issues():
+    async def get_issues(db: AsyncSession) -> list[dict]:
         cached_data = await Cache.get("logs:issues")
         if cached_data:
             return json.loads(cached_data)
 
-        response = await supabase.table("logs").select("*").execute()
-        logs = response.data or []
-        
-        groups = {}
-        
-        def normalize_msg(msg):
+        query = select(LogModel)
+        result = await db.execute(query)
+        logs = result.scalars().all()
+
+        groups: dict[str, dict] = {}
+
+        def normalize_msg(msg: str) -> str:
             if not msg:
                 return "Empty log message"
-            msg = re.sub(r'\d+', 'X', msg)
-            msg = re.sub(r'[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}', 'UUID', msg)
+            msg = re.sub(r"\d+", "X", msg)
+            msg = re.sub(
+                r"[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}",
+                "UUID",
+                msg,
+            )
             return msg.strip()
-            
+
         for log in logs:
-            svc = log.get("service", "unknown")
-            lvl = log.get("level", "INFO").upper()
-            env = log.get("environment", "unknown")
-            raw_msg = log.get("log_message", "")
+            svc = log.service or "unknown"
+            lvl = (log.level or "INFO").upper()
+            env = log.environment or "unknown"
+            raw_msg = log.log_message or ""
             norm_msg = normalize_msg(raw_msg)
-            
+
             key = f"{svc}:{lvl}:{env}:{norm_msg}"
-            created_at = log.get("created_at")
-            
+            created_at = (
+                log.created_at.isoformat()
+                if isinstance(log.created_at, datetime)
+                else str(log.created_at)
+                if log.created_at
+                else None
+            )
+
             if key not in groups:
                 issue_id = hashlib.md5(key.encode()).hexdigest()
                 groups[key] = {
@@ -200,14 +271,18 @@ class LogService:
                     "service": svc,
                     "level": lvl,
                     "environment": env,
-                    "message": raw_msg if len(raw_msg) < 100 else raw_msg[:97] + "...",
+                    "message": raw_msg
+                    if len(raw_msg) < 100
+                    else raw_msg[:97] + "...",
                     "count": 0,
                     "first_seen": created_at,
                     "last_seen": created_at,
-                    "status": "Active" if lvl in ("ERROR", "CRITICAL") else "Monitored",
-                    "assigned_to": "Unassigned"
+                    "status": "Active"
+                    if lvl in ("ERROR", "CRITICAL")
+                    else "Monitored",
+                    "assigned_to": "Unassigned",
                 }
-                
+
             group = groups[key]
             group["count"] += 1
             if created_at:
@@ -215,75 +290,86 @@ class LogService:
                     group["first_seen"] = created_at
                 if not group["last_seen"] or created_at > group["last_seen"]:
                     group["last_seen"] = created_at
-                    
+
         issues_list = list(groups.values())
-        await Cache.set("logs:issues", json.dumps(issues_list), expire_seconds=10)
+        await Cache.set(
+            "logs:issues", json.dumps(issues_list), expire_seconds=10
+        )
         return issues_list
 
     @staticmethod
-    async def get_alerts():
+    async def get_alerts(db: AsyncSession) -> list[dict]:
         cached_data = await Cache.get("logs:alerts")
         if cached_data:
             return json.loads(cached_data)
 
-        response = await supabase.table("logs").select("*").execute()
-        logs = response.data or []
-        
+        query = select(LogModel)
+        result = await db.execute(query)
+        logs = result.scalars().all()
+
         now = datetime.now(UTC)
-        error_counts = {}
-        
+        error_counts: dict[str, int] = {}
+
         for log in logs:
-            lvl = log.get("level", "INFO").upper()
+            lvl = (log.level or "INFO").upper()
             if lvl not in ("ERROR", "CRITICAL"):
                 continue
-                
-            ts_str = log.get("created_at")
-            if not ts_str:
+
+            log_dt = log.created_at
+            if not log_dt:
                 continue
-            if ts_str.endswith("Z"):
-                ts_str = ts_str[:-1] + "+00:00"
-            try:
-                log_dt = datetime.fromisoformat(ts_str)
-            except Exception:
-                continue
-                
+            if isinstance(log_dt, str):
+                ts_str = log_dt
+                if ts_str.endswith("Z"):
+                    ts_str = ts_str[:-1] + "+00:00"
+                try:
+                    log_dt = datetime.fromisoformat(ts_str)
+                except Exception:
+                    continue
+            elif log_dt.tzinfo is None:
+                log_dt = log_dt.replace(tzinfo=UTC)
+
             diff = now - log_dt
             if diff.total_seconds() <= 15 * 60:
-                svc = log.get("service", "unknown")
+                svc = log.service or "unknown"
                 error_counts[svc] = error_counts.get(svc, 0) + 1
-                
+
         alerts = []
         for svc, count in error_counts.items():
             if count >= 3:
-                alert_id = hashlib.md5(f"{svc}:{count}".encode()).hexdigest()[:12]
-                alerts.append({
-                    "id": f"alt_{alert_id}",
-                    "service": svc,
-                    "title": "High Error Rate",
-                    "description": f"Service '{svc}' generated {count} errors in the last 15 minutes.",
-                    "severity": "CRITICAL" if count >= 5 else "WARNING",
-                    "timestamp": now.isoformat(),
-                    "status": "Active"
-                })
-                
+                alert_id = hashlib.md5(f"{svc}:{count}".encode()).hexdigest()[
+                    :12
+                ]
+                alerts.append(
+                    {
+                        "id": f"alt_{alert_id}",
+                        "service": svc,
+                        "title": "High Error Rate",
+                        "description": f"Service '{svc}' generated {count} errors in the last 15 minutes.",
+                        "severity": "CRITICAL" if count >= 5 else "WARNING",
+                        "timestamp": now.isoformat(),
+                        "status": "Active",
+                    }
+                )
+
         await Cache.set("logs:alerts", json.dumps(alerts), expire_seconds=10)
         return alerts
 
     @staticmethod
-    async def get_reports():
+    async def get_reports(db: AsyncSession) -> list[dict]:
         cached_data = await Cache.get("logs:reports")
         if cached_data:
             return json.loads(cached_data)
 
-        stats = await LogService.get_stats()
+        stats = await LogService.get_stats(db)
         total_events = stats["total_count"]
         error_rate = stats["error_rate"]
-        
+
         uptime_api = max(95.0, round(100.0 - error_rate * 0.5, 2))
         uptime_db = 99.99
-        
+
         now = datetime.now(UTC)
-        
+
         reports = [
             {
                 "id": "rep_today",
@@ -295,10 +381,10 @@ class LogService:
                 "service_uptime": {
                     "api-gateway": f"{uptime_api}%",
                     "database": f"{uptime_db}%",
-                    "auth-service": "100%"
+                    "auth-service": "100%",
                 },
                 "summary": f"System operations normal. Service error rate is at {error_rate}%. "
-                           f"Uptime remains within SLA guidelines."
+                f"Uptime remains within SLA guidelines.",
             },
             {
                 "id": "rep_weekly",
@@ -310,11 +396,11 @@ class LogService:
                 "service_uptime": {
                     "api-gateway": f"{max(98.0, uptime_api)}%",
                     "database": "99.95%",
-                    "auth-service": "99.98%"
+                    "auth-service": "99.98%",
                 },
-                "summary": "Weekly audit completed. Major services showed robust uptime. Cache-hit ratio was 94.2%."
-            }
+                "summary": "Weekly audit completed. Major services showed robust uptime. Cache-hit ratio was 94.2%.",
+            },
         ]
-        
+
         await Cache.set("logs:reports", json.dumps(reports), expire_seconds=10)
         return reports

@@ -30,6 +30,8 @@ services:
       dockerfile: Dockerfile
     env_file:
       - ./server/.env
+    environment:
+      - DB_HOST=pgsql
     ports:
       - 3001:3001
     volumes:

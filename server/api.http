@@ -1,21 +1,19 @@
-GET http://localhost:8000/health 
+@baseUrl = https://localhost/api
+# Alternative direct URL (bypassing Nginx):
+# @baseUrl = http://localhost:3001
 
-###
+@logId = 0aebd135-cdc1-47eb-b039-f2a5c55a75a5
 
-GET http://localhost:8000/clear-redis
+### Health Check
+GET {{baseUrl}}/healthz
 
-###
+### Clear Redis Cache
+GET {{baseUrl}}/clear-redis
 
-GET http://localhost:8000/rate-limited
-
-###
-
-GET http://localhost:8000/v1/logs
-
-###
-
-POST http://localhost:8000/v1/logs
-content-type: application/json
+### Create Log
+# @name createLog
+POST {{baseUrl}}/v1/logs
+Content-Type: application/json
 
 {
   "service": "payment-api",
@@ -29,3 +27,46 @@ content-type: application/json
     "currency": "USD"
   }
 }
+
+### Create Error Log
+POST {{baseUrl}}/v1/logs
+Content-Type: application/json
+
+{
+  "service": "auth-service",
+  "environment": "production",
+  "level": "ERROR",
+  "log_message": "Failed login attempt: invalid credentials provided",
+  "trace_id": "trc_auth_8821",
+  "metadata": {
+    "ip": "192.168.1.100",
+    "attempts": 3
+  }
+}
+
+### List All Logs
+GET {{baseUrl}}/v1/logs
+
+### Filter Logs by Service and Level
+GET {{baseUrl}}/v1/logs?service=payment-api&level=INFO
+
+### Get Single Log by ID
+GET {{baseUrl}}/v1/logs/{{logId}}
+
+### Get Log Statistics (Aggregates & Error Rates)
+GET {{baseUrl}}/v1/logs/stats
+
+### Get 24-Hour Log Trends
+GET {{baseUrl}}/v1/logs/trends
+
+### Get Detected Issues (Fingerprinted Groups)
+GET {{baseUrl}}/v1/logs/issues
+
+### Get Active High-Rate Alerts
+GET {{baseUrl}}/v1/logs/alerts
+
+### Get Reliability & Observability Reports
+GET {{baseUrl}}/v1/logs/reports
+
+### Delete Log by ID
+DELETE {{baseUrl}}/v1/logs/{{logId}}
