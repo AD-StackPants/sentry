@@ -9,12 +9,9 @@ from app.shared.rate_limiter import rate_limiter
 router = APIRouter(prefix="/v1/logs", tags=["logs"])
 
 
-@router.post(
-    "",
-    response_model=LogResponse,
-)
+@router.post("", response_model=LogResponse)
 @rate_limiter(limit=5, window=60)
-async def create_log(request: Request, log: LogCreate, db: SessionDep):
+async def create_log(log: LogCreate, db: SessionDep):
     try:
         return await LogService.create_log(db, log)
     except LogStoreError as e:
