@@ -12,29 +12,6 @@ from app.logs.schemas import LogCreate
 from app.shared.cache import Cache
 
 
-def serialize_log(log: LogModel) -> dict:
-    created_at_val = log.created_at
-    if isinstance(created_at_val, datetime):
-        iso_created_at = created_at_val.isoformat()
-    else:
-        iso_created_at = (
-            str(created_at_val)
-            if created_at_val
-            else datetime.now(UTC).isoformat()
-        )
-
-    return {
-        "id": log.id,
-        "service": log.service,
-        "environment": log.environment,
-        "level": log.level,
-        "log_message": log.log_message,
-        "trace_id": log.trace_id,
-        "metadata": log.log_metadata,
-        "created_at": iso_created_at,
-    }
-
-
 class LogService:
     @staticmethod
     async def create_log(db: AsyncSession, log_data: LogCreate) -> dict:
@@ -64,7 +41,7 @@ class LogService:
         await Cache.forget("logs:issues")
         await Cache.forget("logs:alerts")
         await Cache.forget("logs:reports")
-        return serialize_log(log)
+        return log.to_dict()
 
     @staticmethod
     async def list_logs(
@@ -85,7 +62,7 @@ class LogService:
 
         result = await db.execute(query)
         logs = result.scalars().all()
-        data = [serialize_log(log) for log in logs]
+        data = [log.to_dict() for log in logs]
         await Cache.set(cache_key, json.dumps(data), expire_seconds=10)
         return data
 
@@ -101,7 +78,7 @@ class LogService:
         if not log:
             raise LogNotFoundError(f"Log with id {log_id} not found")
 
-        data = serialize_log(log)
+        data = log.to_dict()
         await Cache.set(f"log:{log_id}", json.dumps(data), expire_seconds=60)
         return data
 

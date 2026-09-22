@@ -26,6 +26,18 @@ class LogModel(Base):
         DateTime(timezone=True), default=lambda: datetime.now(UTC)
     )
 
+    def to_dict(self) -> dict:
+        return {
+            "id": self.id,
+            "service": self.service,
+            "environment": self.environment,
+            "level": self.level,
+            "log_message": self.log_message,
+            "trace_id": self.trace_id,
+            "metadata": self.log_metadata,
+            "created_at": self.created_at.isoformat()
+        }
+
     @classmethod
     async def create(cls, db: AsyncSession, log: "LogModel") -> "LogModel":
         db.add(log)
