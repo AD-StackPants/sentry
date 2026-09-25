@@ -1,9 +1,9 @@
-## 📌 Core Philosophy & Constraints
+## Core Philosophy & Constraints
 - **Automated Verification First**: Linters, formatters, and static analysis MUST handle code formatting; human review focuses on architecture, security, and edge cases.
 - **Constructive & Specific**: Feedback must be actionable, clear, and reference exact lines or standards.
 - **Security & Reliability Focus**: Prioritize OWASP vulnerabilities, race conditions, memory leaks, and N+1 query patterns.
 
-## ⚡ Production Boilerplate / Standard Pattern
+## Production Boilerplate / Standard Pattern
 
 ### Reviewer Checklist Matrix
 
@@ -24,11 +24,11 @@
 - [ ] Are async operations used properly without blocking thread loops?
 ```
 
-## 🚫 Forbidden Anti-Patterns
-- ❌ **Manual Style Nitpicking**: Leaving review comments about indentation or quotes instead of using Prettier/Ruff.
-- ❌ **Rubber-Stamp Approval**: Approving PRs without opening diffs or running test verification.
-- ❌ **Unclear Action Items**: Leaving comments like "fix this" without explaining the problem or suggesting a solution.
+## Forbidden Anti-Patterns
+- **Manual Style Nitpicking**: Leaving review comments about indentation or quotes instead of using Prettier/Ruff.
+- **Rubber-Stamp Approval**: Approving PRs without opening diffs or running test verification.
+- **Unclear Action Items**: Leaving comments like "fix this" without explaining the problem or suggesting a solution.
 
-## 🔍 Verification & Testing
+## Verification & Testing
 - **CODEOWNERS Enforcement**: Enforce mandatory approval from domain owners for core paths (`/backend/`, `/frontend/`).
 - **Review Verification**: Verify all review threads are explicitly marked resolved prior to merge.

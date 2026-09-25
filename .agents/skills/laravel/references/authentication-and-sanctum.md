@@ -1,10 +1,10 @@
 # Laravel Authentication & Sanctum Tokens
 
-## 📌 Core Philosophy & Constraints
+## Core Philosophy & Constraints
 - **Laravel Sanctum Bearer Tokens**: Issue personal access tokens with explicit scopes and expiration limits.
 - **Strict Password Hashing**: Use Argon2id or Bcrypt for password verification (`Hash::check()`).
 
-## ⚡ Production Boilerplate / Standard Pattern
+## Production Boilerplate / Standard Pattern
 
 ```php
 <?php
@@ -38,6 +38,9 @@ final class IssueSanctumTokenAction
 }
 ```
 
-## 🚫 Forbidden Anti-Patterns
-- ❌ **Unexpiring Sanctum Tokens**: Issuing access tokens without setting `expiresAt` or config expiration limits.
-- ❌ **Wildcard Abilities**: Assigning `['*']` abilities to tokens when granular scopes exist.
+## Forbidden Anti-Patterns
+- **Unexpiring Sanctum Tokens**: Issuing access tokens without setting `expiresAt` or config expiration limits.
+- **Wildcard Abilities**: Assigning `['*']` abilities to tokens when granular scopes exist.
+
+## Verification & Testing
+- **Sanctum Token Pest Tests**: Verify authenticated routes reject missing/expired tokens with 401 Unauthorized using `assertUnauthorized()`.

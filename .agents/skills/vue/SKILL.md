@@ -1,6 +1,7 @@
 ---
 name: vue
-description: "Vue 3 Composition API, Composables, Pinia state management, VeeValidate, and Vitest guidelines."
+description: >-
+ Use this skill whenever building, modifying, or testing Vue 3 applications, Single File Components (<script setup lang="ts">), Composables, Pinia state management stores, VeeValidate with Zod, Shadcn Vue integration, Vue Router 4, or Vitest Vue tests.
 ---
 
 
@@ -10,7 +11,7 @@ This document serves as the decision matrix and component pattern reference for 
 
 ---
 
-## 🛠️ Tech Stack & Version Manifest
+## Tech Stack & Version Manifest
 
 - **Core Framework**: Vue 3.x (Composition API, `<script setup lang="ts">`)
 - **Routing Engine**: Vue Router 4.x (History Mode, Navigation Guards)
@@ -22,24 +23,24 @@ This document serves as the decision matrix and component pattern reference for 
 
 ---
 
-## 🔗 Sub-Skill Deep Dive References
+## Sub-Skill Deep Dive References
 
-- 💚 **Composition API**: [composition-api.md](./references/composition-api.md)
-- 🔌 **Composables Patterns**: [composables-patterns.md](./references/composables-patterns.md)
-- 🧩 **Component Design**: [component-design.md](./references/component-design.md)
-- 🍍 **Pinia State Management**: [pinia-state-management.md](./references/pinia-state-management.md)
-- 🌐 **Axios API Client**: [axios-api-client.md](./references/axios-api-client.md)
-- 🗺️ **Route Definitions**: [route-definitions.md](./references/route-definitions.md)
-- 🛡️ **Navigation Guards**: [navigation-guards.md](./references/navigation-guards.md)
-- 📝 **VeeValidate & Zod**: [vee-validate-zod.md](./references/vee-validate-zod.md)
-- 🎨 **Shadcn Vue**: [shadcn-vue.md](./references/shadcn-vue.md)
-- 🧪 **Vitest Vue Test Utils**: [vitest-vue-test-utils.md](./references/vitest-vue-test-utils.md)
-- 🎭 **Playwright E2E**: [playwright.md](./references/playwright.md)
-- ⚡ **Vue Performance**: [vue-performance.md](./references/vue-performance.md)
+- **Composition API**: [composition-api.md](./references/composition-api.md)
+- **Composables Patterns**: [composables-patterns.md](./references/composables-patterns.md)
+- **Component Design**: [component-design.md](./references/component-design.md)
+- **Pinia State Management**: [pinia-state-management.md](./references/pinia-state-management.md)
+- **Axios API Client**: [axios-api-client.md](./references/axios-api-client.md)
+- **Route Definitions**: [route-definitions.md](./references/route-definitions.md)
+- **Navigation Guards**: [navigation-guards.md](./references/navigation-guards.md)
+- **VeeValidate & Zod**: [vee-validate-zod.md](./references/vee-validate-zod.md)
+- **Shadcn Vue**: [shadcn-vue.md](./references/shadcn-vue.md)
+- **Vitest Vue Test Utils**: [vitest-vue-test-utils.md](./references/vitest-vue-test-utils.md)
+- **Playwright E2E**: [playwright.md](./references/playwright.md)
+- **Vue Performance**: [vue-performance.md](./references/vue-performance.md)
 
 ---
 
-## 🧭 1. Vue 3 Architecture & Component Matrix
+## 1. Vue 3 Architecture & Component Matrix
 
 | Layer / Responsibility | Standard Pattern | Architectural Rule |
 | :--- | :--- | :--- |
@@ -51,7 +52,8 @@ This document serves as the decision matrix and component pattern reference for 
 
 ---
 
-## 🛠️ 2. Production Code Standard Pattern
+## 2. Production Code Standard Pattern
+<!-- Aligned with frontend-core design tokens: #1976D2 primary, rounded-lg, shadow-xs, cursor-pointer, font-mono -->
 
 ```vue
 <script setup lang="ts">
@@ -59,16 +61,16 @@ import { ref, computed } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 
 interface Props {
-  title: string;
-  initialCount?: number;
+ title: string;
+ initialCount?: number;
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  initialCount: 0,
+ initialCount: 0,
 });
 
 const emit = defineEmits<{
-  (e: 'update:count', value: number): void;
+ (e: 'update:count', value: number): void;
 }>();
 
 const authStore = useAuthStore();
@@ -77,39 +79,48 @@ const count = ref(props.initialCount);
 const doubleCount = computed(() => count.value * 2);
 
 function increment(): void {
-  count.value++;
-  emit('update:count', count.value);
+ count.value++;
+ emit('update:count', count.value);
 }
 </script>
 
 <template>
-  <div className="p-4 border rounded shadow-sm max-w-sm">
-    <h3 className="text-lg font-bold">{{ title }}</h3>
-    <p className="text-gray-600 mt-1">User: {{ authStore.user?.name ?? 'Guest' }}</p>
-    <div className="mt-4 flex items-center justify-between">
-      <span>Count: {{ count }} (Double: {{ doubleCount }})</span>
+ <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-xs max-w-sm">
+    <div class="flex items-center justify-between">
+      <h3 class="text-xs font-semibold text-slate-700 dark:text-slate-300">{{ title }}</h3>
+      <span class="text-[10px] font-mono text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded-md border border-slate-200 dark:border-slate-700">
+        {{ authStore.user?.name ?? 'Guest' }}
+      </span>
+    </div>
+    <div class="mt-4 flex items-center justify-between">
+      <span class="text-sm font-mono text-slate-900 dark:text-white">
+        Count: {{ count }} <span class="text-xs text-slate-500">(2x: {{ doubleCount }})</span>
+      </span>
       <button
+        type="button"
         @click="increment"
-        className="bg-emerald-600 text-white px-3 py-1 rounded hover:bg-emerald-700"
+        class="inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#1976D2] hover:bg-[#1565C0] active:bg-[#0D47A1] text-white text-xs font-semibold shadow-xs transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#1976D2]"
       >
-        +1
+        +1 Increment
       </button>
     </div>
-  </div>
+ </div>
 </template>
 ```
 
 ---
 
-## 🚫 Forbidden Anti-Patterns
+## Forbidden Anti-Patterns
 
-- ❌ **Legacy Options API**: Writing `export default { data(), methods: {} }` instead of Composition API.
-- ❌ **Direct Prop Mutation**: Mutating a prop directly inside a child component instead of emitting events.
-- ❌ **Untyped Reactive Refs**: Creating `const user = ref()` without generic type annotations (`ref<User | null>(null)`).
+- **React JSX Attributes in Vue**: Using `className="..."` or `htmlFor="..."` in `<template>` instead of standard `class` and `for`.
+- **Legacy Options API**: Writing `export default { data(), methods: {} }` instead of Composition API.
+- **Direct Prop Mutation**: Mutating a prop directly inside a child component instead of emitting events.
+- **Untyped Reactive Refs**: Creating `const user = ref()` without generic type annotations (`ref<User | null>(null)`).
+- **Design Token Violations**: Using generic Tailwind colors (`bg-emerald-600`) or missing `cursor-pointer` on buttons.
 
 ---
 
-## 🔍 Verification & Quality Assurance
+## Verification & Quality Assurance
 
 - **Type Check Assertion**: `npx vue-tsc --noEmit` asserting zero template type errors.
 - **Unit Test Execution**: `npx vitest run` verifying component mounting and reactivity behavior.

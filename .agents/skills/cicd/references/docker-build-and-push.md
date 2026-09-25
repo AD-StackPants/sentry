@@ -1,20 +1,20 @@
-## 📌 Core Philosophy & Constraints
+## Core Philosophy & Constraints
 - **Docker Buildx & Layer Cache**: Use `docker/setup-buildx-action` with GitHub Actions cache backend (`type=gha`).
 - **Semantic Tagging**: Tag container images with Git commit SHA and release tag (`type=sha`, `type=semver`).
 - **OIDC ECR Authentication**: Authenticate to AWS ECR using OpenID Connect (OIDC) without long-lived access keys.
 
-## ⚡ Production Boilerplate / Standard Pattern
+## Production Boilerplate / Standard Pattern
 
 ```yaml
 name: Docker Build & Push Pipeline
 
 on:
-  push:
+ push:
     branches: [main, staging, production]
     tags: ['v*.*.*']
 
 jobs:
-  build-and-push:
+ build-and-push:
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -56,10 +56,10 @@ jobs:
           cache-to: type=gha,mode=max
 ```
 
-## 🚫 Forbidden Anti-Patterns
-- ❌ **Static AWS Credentials**: Using static `AWS_ACCESS_KEY_ID` secrets instead of IAM OIDC roles.
-- ❌ **Disabling Layer Caching**: Rebuilding raw Docker image layers from scratch on every push without `type=gha`.
-- ❌ **Tagging Everything as `latest`**: Pushing images tagged only as `latest` without immutable SHA or semver tags.
+## Forbidden Anti-Patterns
+- **Static AWS Credentials**: Using static `AWS_ACCESS_KEY_ID` secrets instead of IAM OIDC roles.
+- **Disabling Layer Caching**: Rebuilding raw Docker image layers from scratch on every push without `type=gha`.
+- **Tagging Everything as `latest`**: Pushing images tagged only as `latest` without immutable SHA or semver tags.
 
-## 🔍 Verification & Testing
+## Verification & Testing
 - **ECR Tag Verification**: Query `aws ecr describe-images --repository-name saas-backend` verifying commit SHA tag pushed successfully.

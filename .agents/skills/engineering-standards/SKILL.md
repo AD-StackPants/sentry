@@ -1,6 +1,7 @@
 ---
 name: engineering-standards
-description: "Git branching, commit conventions, PR standards, code reviews, testing strategies, structured logging, and SaaS architecture."
+description: >-
+ Use this skill whenever defining or checking software development standards, Git branching strategies, Conventional Commits, Pull Request standards, code review checklists, multi-tenancy isolation (tenant_id), RFC 7807 Problem Details error handling, structured JSON logging, or testing strategies (Unit, Integration, Playwright E2E).
 ---
 
 # Engineering Standards & SaaS Architecture Skill Registry
@@ -9,7 +10,7 @@ This document serves as the master decision matrix and engineering specification
 
 ---
 
-## 🛠️ Core Standards & Tooling Manifest
+## Core Standards & Tooling Manifest
 
 - **Version Control & Workflows**: Git 2.45+ (Trunk-Based / Feature-Branch Strategy)
 - **Commit Format**: Conventional Commits 1.0.0 (`feat:`, `fix:`, `docs:`, `style:`, `refactor:`, `test:`, `chore:`)
@@ -20,27 +21,27 @@ This document serves as the master decision matrix and engineering specification
 
 ---
 
-## 🔗 Sub-Skill Deep Dive References
+## Sub-Skill Deep Dive References
 
-- 🌿 **Branching Strategy**: [branching-strategy.md](./references/branching-strategy.md)
-- 📝 **Commit Conventions**: [commit-conventions.md](./references/commit-conventions.md)
-- 🔀 **Pull Request Standards**: [pull-request-standards.md](./references/pull-request-standards.md)
-- 🔍 **Code Review Checklist**: [code-review-checklist.md](./references/code-review-checklist.md)
-- 🧪 **Unit Testing Strategy**: [unit-testing.md](./references/unit-testing.md)
-- 🧩 **Integration Testing**: [integration-testing.md](./references/integration-testing.md)
-- 🎭 **E2E Testing (Playwright)**: [e2e-testing.md](./references/e2e-testing.md)
-- 🎯 **Test-Driven Guidelines**: [test-driven-guidelines.md](./references/test-driven-guidelines.md)
-- 📜 **Structured Logging**: [structured-logging.md](./references/structured-logging.md)
-- 🆔 **Context & Tracing**: [context-and-tracing.md](./references/context-and-tracing.md)
-- 📊 **Metrics & Alerts**: [metrics-and-alerts.md](./references/metrics-and-alerts.md)
-- 🏢 **Multi-Tenancy SaaS**: [multi-tenancy.md](./references/multi-tenancy.md)
-- 🚨 **Error Handling Standards**: [error-handling-standards.md](./references/error-handling-standards.md)
-- 🛡️ **Fault Tolerance & Retries**: [fault-tolerance-reliability.md](./references/fault-tolerance-reliability.md)
-- 🔒 **Security & Compliance**: [security-and-compliance.md](./references/security-and-compliance.md)
+- **Branching Strategy**: [branching-strategy.md](./references/branching-strategy.md)
+- **Commit Conventions**: [commit-conventions.md](./references/commit-conventions.md)
+- **Pull Request Standards**: [pull-request-standards.md](./references/pull-request-standards.md)
+- **Code Review Checklist**: [code-review-checklist.md](./references/code-review-checklist.md)
+- **Unit Testing Strategy**: [unit-testing.md](./references/unit-testing.md)
+- **Integration Testing**: [integration-testing.md](./references/integration-testing.md)
+- **E2E Testing (Playwright)**: [e2e-testing.md](./references/e2e-testing.md)
+- **Test-Driven Guidelines**: [test-driven-guidelines.md](./references/test-driven-guidelines.md)
+- **Structured Logging**: [structured-logging.md](./references/structured-logging.md)
+- **Context & Tracing**: [context-and-tracing.md](./references/context-and-tracing.md)
+- **Metrics & Alerts**: [metrics-and-alerts.md](./references/metrics-and-alerts.md)
+- **Multi-Tenancy SaaS**: [multi-tenancy.md](./references/multi-tenancy.md)
+- **Error Handling Standards**: [error-handling-standards.md](./references/error-handling-standards.md)
+- **Fault Tolerance & Retries**: [fault-tolerance-reliability.md](./references/fault-tolerance-reliability.md)
+- **Security & Compliance**: [security-and-compliance.md](./references/security-and-compliance.md)
 
 ---
 
-## 🧭 1. Engineering Standards Decision Matrix
+## 1. Engineering Standards Decision Matrix
 
 | Engineering Area | Standard Pattern | Architectural Rule |
 | :--- | :--- | :--- |
@@ -53,20 +54,20 @@ This document serves as the master decision matrix and engineering specification
 
 ---
 
-## 🛠️ 2. Production Code Standard Pattern
+## 2. Production Code Standard Pattern
 
 ```json
 {
-  "timestamp": "2026-08-06T08:30:00.000Z",
-  "level": "INFO",
-  "logger": "app.services.order_service",
-  "message": "Order created successfully",
-  "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
-  "span_id": "00f067aa0ba902b7",
-  "tenant_id": "tenant_12345",
-  "user_id": "usr_9988",
-  "order_id": "ord_7711",
-  "amount": 149.99
+ "timestamp": "2026-08-06T08:30:00.000Z",
+ "level": "INFO",
+ "logger": "app.services.order_service",
+ "message": "Order created successfully",
+ "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+ "span_id": "00f067aa0ba902b7",
+ "tenant_id": "tenant_12345",
+ "user_id": "usr_9988",
+ "order_id": "ord_7711",
+ "amount": 149.99
 }
 ```
 
@@ -82,17 +83,17 @@ Closes #142
 
 ---
 
-## 🚫 Forbidden Anti-Patterns
+## Forbidden Anti-Patterns
 
-- ❌ **Direct Pushes to Main**: Pushing code directly to protected primary branches without pull requests and green CI checks.
-- ❌ **Vague Commit Messages**: Using generic commit messages like `"wip"`, `"fix stuff"`, or `"updates"`.
-- ❌ **Cross-Tenant Data Leakage**: Querying multi-tenant database tables without explicit `tenant_id` filters or RLS policies.
-- ❌ **Unstructured String Logging**: Writing `print("User logged in " + str(user))` instead of JSON key-value log events.
-- ❌ **Silent Exception Swallowing**: Swallowing errors in empty `try/except` blocks without logging context or re-raising.
+- **Direct Pushes to Main**: Pushing code directly to protected primary branches without pull requests and green CI checks.
+- **Vague Commit Messages**: Using generic commit messages like `"wip"`, `"fix stuff"`, or `"updates"`.
+- **Cross-Tenant Data Leakage**: Querying multi-tenant database tables without explicit `tenant_id` filters or RLS policies.
+- **Unstructured String Logging**: Writing `print("User logged in " + str(user))` instead of JSON key-value log events.
+- **Silent Exception Swallowing**: Swallowing errors in empty `try/except` blocks without logging context or re-raising.
 
 ---
 
-## 🔍 Verification & Quality Assurance
+## Verification & Quality Assurance
 
 - **Commit Validation**: Run `npx commitlint` on Git hooks ensuring Conventional Commits compliance.
 - **Coverage Enforcement**: Assert min 80% test coverage requirement in CI pipelines before allowing PR merge.

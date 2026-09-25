@@ -1,9 +1,9 @@
-## 📌 Core Philosophy & Constraints
+## Core Philosophy & Constraints
 - **API Resource Transformers**: Always transform Eloquent model outputs through `JsonResource` or `ResourceCollection` classes.
 - **Strict Data Scrubbing**: Never return raw Eloquent model instances directly (`return Order::all()`).
 - **ISO-8601 Timestamps**: Format date fields explicitly using `$this->created_at->toIso8601String()`.
 
-## ⚡ Production Boilerplate / Standard Pattern
+## Production Boilerplate / Standard Pattern
 
 ```php
 <?php
@@ -33,10 +33,10 @@ final class OrderResource extends JsonResource
 }
 ```
 
-## 🚫 Forbidden Anti-Patterns
-- ❌ **Direct Eloquent Serialization**: Returning Eloquent models directly leaking hidden `$hidden` columns or unformatted timestamps.
-- ❌ **Triggering N+1 in Resources**: Accessing unloaded relations inside resources without `$this->whenLoaded('items')`.
-- ❌ **Untyped Resource Maps**: Transforming arrays using inline `array_map()` inside controllers instead of JsonResource collection.
+## Forbidden Anti-Patterns
+- **Direct Eloquent Serialization**: Returning Eloquent models directly leaking hidden `$hidden` columns or unformatted timestamps.
+- **Triggering N+1 in Resources**: Accessing unloaded relations inside resources without `$this->whenLoaded('items')`.
+- **Untyped Resource Maps**: Transforming arrays using inline `array_map()` inside controllers instead of JsonResource collection.
 
-## 🔍 Verification & Testing
+## Verification & Testing
 - **Pest Resource Test**: Test `OrderResource::make($order)` asserting expected JSON dictionary keys.

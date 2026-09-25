@@ -1,9 +1,9 @@
-## 📌 Core Philosophy & Constraints
+## Core Philosophy & Constraints
 - **Strict Outbound Timeouts**: Configure connect timeouts (2.0s) and read timeouts (5.0s) for HTTPX client sessions.
 - **Exponential Backoff & Retries**: Retry 5xx server errors and network timeouts with randomized jitter using `tenacity`.
 - **Connection Pooling**: Reuse persistent `httpx.AsyncClient` instances instead of instantiating new client objects per request.
 
-## ⚡ Production Boilerplate / Standard Pattern
+## Production Boilerplate / Standard Pattern
 
 ```python
 import httpx
@@ -28,10 +28,10 @@ class ResilientExternalClient:
         return response.json()
 ```
 
-## 🚫 Forbidden Anti-Patterns
-- ❌ **Unbounded Outbound Requests**: Invoking external APIs without explicit timeouts causing thread pool starvation.
-- ❌ **Retrying Client 4xx Errors**: Retrying HTTP 400 or 401 response errors which will never succeed on retry.
-- ❌ **Creating New Client Instances Per Request**: Re-instantiating HTTP client objects without connection pooling.
+## Forbidden Anti-Patterns
+- **Unbounded Outbound Requests**: Invoking external APIs without explicit timeouts causing thread pool starvation.
+- **Retrying Client 4xx Errors**: Retrying HTTP 400 or 401 response errors which will never succeed on retry.
+- **Creating New Client Instances Per Request**: Re-instantiating HTTP client objects without connection pooling.
 
-## 🔍 Verification & Testing
+## Verification & Testing
 - **HTTPX Mock Test**: Mock external API delay with `respx` asserting client timeouts at 5 seconds in Pytest.

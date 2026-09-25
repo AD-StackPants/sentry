@@ -1,9 +1,9 @@
-## 📌 Core Philosophy & Constraints
+## Core Philosophy & Constraints
 - **Cold-Start Optimization**: Minimize bundle size, initialize global clients outside handler scope, use Provisioned Concurrency for critical APIs.
 - **Container Image Packaging**: Package Lambda functions as Docker ECR images for deterministic dependency setups.
 - **Reserved Concurrency Limits**: Cap reserved concurrency to protect backend relational databases.
 
-## ⚡ Production Boilerplate / Standard Pattern
+## Production Boilerplate / Standard Pattern
 
 ```python
 # app/lambda_function.py
@@ -31,16 +31,16 @@ async def handler(event: dict, context: dict) -> dict:
 ```hcl
 # Terraform Provisioned Concurrency
 resource "aws_lambda_provisioned_concurrency_config" "app" {
-  function_name         = aws_lambda_function.app.function_name
-  provisioned_concurrent_executions = 5
-  qualifier             = aws_lambda_alias.prod.name
+ function_name = aws_lambda_function.app.function_name
+ provisioned_concurrent_executions = 5
+ qualifier = aws_lambda_alias.prod.name
 }
 ```
 
-## 🚫 Forbidden Anti-Patterns
-- ❌ **In-Handler Client Initialization**: Instantiating DB pools or HTTP clients inside `handler()` on every invocation.
-- ❌ **Uncapped Concurrency**: Allowing Lambda to scale to 1,000 instances exhausting RDS connection pools.
-- ❌ **Uncompressed Heavy Dependencies**: Including unused test packages in production function zip artifacts.
+## Forbidden Anti-Patterns
+- **In-Handler Client Initialization**: Instantiating DB pools or HTTP clients inside `handler()` on every invocation.
+- **Uncapped Concurrency**: Allowing Lambda to scale to 1,000 instances exhausting RDS connection pools.
+- **Uncompressed Heavy Dependencies**: Including unused test packages in production function zip artifacts.
 
-## 🔍 Verification & Testing
+## Verification & Testing
 - **Invocation Test**: Execute `aws lambda invoke --function-name my-func response.json` asserting HTTP 200 return status.

@@ -1,10 +1,10 @@
-## 📌 Core Philosophy & Constraints
+## Core Philosophy & Constraints
 - **Zero Trust Security**: Validate and sanitize every request input regardless of origin.
 - **Mandatory Security Headers**: Responses MUST include `Strict-Transport-Security`, `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, and `Content-Security-Policy`.
 - **Strict CORS Rules**: Never use wildcard `Access-Control-Allow-Origin: *` when credentials/cookies are permitted.
 - **Secret Hygiene**: Zero plain-text credentials in repository source files or Docker images.
 
-## ⚡ Production Boilerplate / Standard Pattern
+## Production Boilerplate / Standard Pattern
 
 ### Security Middleware Setup (FastAPI)
 ```python
@@ -34,11 +34,11 @@ app.add_middleware(
 )
 ```
 
-## 🚫 Forbidden Anti-Patterns
-- ❌ **Wildcard CORS with Credentials**: Combining `allow_origins=["*"]` with `allow_credentials=True`.
-- ❌ **Hardcoded Secrets**: Committing API tokens or database passwords into codebase files.
-- ❌ **Raw Query Concatenation**: Constructing SQL or Mongo queries via string formatting instead of parameterized bindings.
+## Forbidden Anti-Patterns
+- **Wildcard CORS with Credentials**: Combining `allow_origins=["*"]` with `allow_credentials=True`.
+- **Hardcoded Secrets**: Committing API tokens or database passwords into codebase files.
+- **Raw Query Concatenation**: Constructing SQL or Mongo queries via string formatting instead of parameterized bindings.
 
-## 🔍 Verification & Testing
+## Verification & Testing
 - **Header Inspection Test**: Execute `curl -I http://localhost:8000/api/v1/healthz` and assert presence of all 4 security headers.
 - **Secret Scanner**: Run `gitleaks detect` in CI pipeline to verify zero committed credentials.

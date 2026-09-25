@@ -1,6 +1,7 @@
 ---
 name: aws
-description: "AWS EC2, ECS Docker, Lambda serverless, RDS PostgreSQL/MySQL, S3/CloudFront, and IAM VPC infrastructure guidelines."
+description: >-
+ Use this skill whenever provisioning, configuring, or reviewing AWS cloud infrastructure with Terraform 5.x HCL, EC2 instances (IMDSv2), ECS Fargate containers, Lambda serverless functions, RDS PostgreSQL/MySQL Multi-AZ databases, S3 buckets with CloudFront OAC, least-privilege IAM policies, or VPC networking.
 ---
 
 
@@ -10,7 +11,7 @@ This document serves as the cloud architecture matrix and Terraform HCL specific
 
 ---
 
-## 🛠️ Tech Stack & Provider Manifest
+## Tech Stack & Provider Manifest
 
 - **Infrastructure as Code**: Terraform 5.x (AWS Provider `hashicorp/aws >= 5.0`)
 - **Compute Instance**: Amazon EC2 (Ubuntu 24.04 LTS Noble ARM64 `t4g.medium`)
@@ -22,19 +23,19 @@ This document serves as the cloud architecture matrix and Terraform HCL specific
 
 ---
 
-## 🔗 Sub-Skill Deep Dive References
+## Sub-Skill Deep Dive References
 
-- 🖥️ **EC2 Instance Management**: [ec2-instance-management.md](./references/ec2-instance-management.md)
-- 🐳 **ECS Docker Deployments**: [ecs-docker-deployments.md](./references/ecs-docker-deployments.md)
-- ⚡ **Lambda Serverless**: [lambda-serverless.md](./references/lambda-serverless.md)
-- 🐘 **RDS PostgreSQL / MySQL**: [rds-postgresql-mysql.md](./references/rds-postgresql-mysql.md)
-- 🪣 **S3 & CloudFront CDN**: [s3-and-cloudfront.md](./references/s3-and-cloudfront.md)
-- 🔑 **IAM Roles & Policies**: [iam-roles-and-policies.md](./references/iam-roles-and-policies.md)
-- 🌐 **VPC & Networking**: [vpc-and-networking.md](./references/vpc-and-networking.md)
+- **EC2 Instance Management**: [ec2-instance-management.md](./references/ec2-instance-management.md)
+- **ECS Docker Deployments**: [ecs-docker-deployments.md](./references/ecs-docker-deployments.md)
+- **Lambda Serverless**: [lambda-serverless.md](./references/lambda-serverless.md)
+- **RDS PostgreSQL / MySQL**: [rds-postgresql-mysql.md](./references/rds-postgresql-mysql.md)
+- **S3 & CloudFront CDN**: [s3-and-cloudfront.md](./references/s3-and-cloudfront.md)
+- **IAM Roles & Policies**: [iam-roles-and-policies.md](./references/iam-roles-and-policies.md)
+- **VPC & Networking**: [vpc-and-networking.md](./references/vpc-and-networking.md)
 
 ---
 
-## 🧭 1. AWS Cloud Decision Matrix
+## 1. AWS Cloud Decision Matrix
 
 | Layer / Resource | Terraform Resource | Security / Architectural Rule |
 | :--- | :--- | :--- |
@@ -47,48 +48,48 @@ This document serves as the cloud architecture matrix and Terraform HCL specific
 
 ---
 
-## 🛠️ 2. Production Terraform HCL Pattern
+## 2. Production Terraform HCL Pattern
 
 ```hcl
 # AWS EC2 Instance with IMDSv2 Hardening
 resource "aws_instance" "app_server" {
-  ami                  = data.aws_ami.ubuntu_noble.id
-  instance_type        = "t4g.medium"
-  subnet_id            = module.vpc.private_subnets[0]
-  iam_instance_profile = aws_iam_instance_profile.ssm_profile.name
+ ami = data.aws_ami.ubuntu_noble.id
+ instance_type = "t4g.medium"
+ subnet_id = module.vpc.private_subnets[0]
+ iam_instance_profile = aws_iam_instance_profile.ssm_profile.name
 
-  metadata_options {
+ metadata_options {
     http_endpoint               = "enabled"
     http_tokens                 = "required" # Enforce IMDSv2
     http_put_response_hop_limit = 1
-  }
+ }
 
-  root_block_device {
+ root_block_device {
     volume_type           = "gp3"
     volume_size           = 30
     encrypted             = true
     delete_on_termination = true
-  }
+ }
 
-  tags = {
+ tags = {
     Environment = "production"
     Name        = "saas-app-server"
-  }
+ }
 }
 ```
 
 ---
 
-## 🚫 Forbidden Anti-Patterns
+## Forbidden Anti-Patterns
 
-- ❌ **Public SSH Port 22 (0.0.0.0/0)**: Opening SSH directly to the internet instead of using AWS SSM Session Manager.
-- ❌ **IMDSv1 Optional Token Access**: Setting `http_tokens = "optional"` permitting SSRF metadata credential theft.
-- ❌ **Public Database Subnets**: Provisioning RDS database instances in public subnets with `publicly_accessible = true`.
-- ❌ **Wildcard IAM Policies**: Assigning `Action = "*"` or `Resource = "*"` to application service roles.
+- **Public SSH Port 22 (0.0.0.0/0)**: Opening SSH directly to the internet instead of using AWS SSM Session Manager.
+- **IMDSv1 Optional Token Access**: Setting `http_tokens = "optional"` permitting SSRF metadata credential theft.
+- **Public Database Subnets**: Provisioning RDS database instances in public subnets with `publicly_accessible = true`.
+- **Wildcard IAM Policies**: Assigning `Action = "*"` or `Resource = "*"` to application service roles.
 
 ---
 
-## 🔍 Verification & Quality Assurance
+## Verification & Quality Assurance
 
 - **Terraform Validation**: Run `terraform validate` asserting syntactically valid infrastructure declarations.
 - **Security Audit**: Run `tfsec .` or `checkov` verifying zero high-severity security misconfigurations.

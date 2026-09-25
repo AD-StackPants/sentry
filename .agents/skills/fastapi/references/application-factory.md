@@ -1,25 +1,28 @@
-## 📌 Core Philosophy & Constraints
+## Core Philosophy & Constraints
 - **Lifespan Context Manager**: Use `asynccontextmanager` for application lifespan setup/teardown (DB pools, Redis connections).
 - **Application Factory**: Instantiate FastAPI via factory function `create_app()`.
 - **Global Exception Handlers**: Register central exception handlers for HTTP and Pydantic errors.
 
-## ⚡ Production Boilerplate / Standard Pattern
+## Production Boilerplate / Standard Pattern
 
 ```python
+import structlog
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.v1.router import api_v1_router
 from app.core.database import engine
 
+logger = structlog.get_logger()
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup logic
-    print("🚀 App initialized, database connection pool starting...")
+    logger.info("application_startup", status="initializing_pools")
     yield
     # Shutdown logic
     await engine.dispose()
-    print("🛑 Database engine connection pool disposed.")
+    logger.info("application_shutdown", status="pools_disposed")
 
 def create_app() -> FastAPI:
     app = FastAPI(
@@ -44,10 +47,10 @@ def create_app() -> FastAPI:
 app = create_app()
 ```
 
-## 🚫 Forbidden Anti-Patterns
-- ❌ **Deprecated `@app.on_event("startup")`**: Using deprecated startup event decorators instead of `lifespan`.
-- ❌ **Global Hardcoded App Object**: Initializing `app = FastAPI()` at root module level without a factory function wrapper.
-- ❌ **Unclosed Engine Pools**: Exiting application processes without disposing database connection pools in lifespan teardown.
+## Forbidden Anti-Patterns
+- **Deprecated `@app.on_event("startup")`**: Using deprecated startup event decorators instead of `lifespan`.
+- **Global Hardcoded App Object**: Initializing `app = FastAPI()` at root module level without a factory function wrapper.
+- **Unclosed Engine Pools**: Exiting application processes without disposing database connection pools in lifespan teardown.
 
-## 🔍 Verification & Testing
+## Verification & Testing
 - **TestClient Lifespan Verification**: Test application lifespan startup and shutdown with `TestClient(app)` context in Pytest.

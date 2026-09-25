@@ -1,6 +1,7 @@
 ---
 name: docker
-description: "Docker multi-stage builds, non-root container security, Dockerfile templates, and Compose orchestration."
+description: >-
+ Use this skill whenever creating, optimizing, or debugging Dockerfiles, multi-stage container builds (<200MB), non-root security (USER appuser), Docker Compose local development environments, Traefik v3 ingress routing, or container healthchecks.
 ---
 
 
@@ -10,7 +11,7 @@ This document serves as the containerization decision matrix and Dockerfile spec
 
 ---
 
-## 🛠️ Tech Stack & Base Image Manifest
+## Tech Stack & Base Image Manifest
 
 - **Container Engine**: Docker Engine 26+ / Docker Compose v2
 - **Frontend Base Image**: Node 25 Alpine (`node:25-alpine`)
@@ -22,19 +23,19 @@ This document serves as the containerization decision matrix and Dockerfile spec
 
 ---
 
-## 🔗 Sub-Skill Deep Dive References
+## Sub-Skill Deep Dive References
 
-- 🏗️ **Multi-Stage Builds**: [multi-stage-builds.md](./references/multi-stage-builds.md)
-- 🛡️ **Non-Root Security**: [security-and-non-root.md](./references/security-and-non-root.md)
-- 🖥️ **Frontend Dockerfile**: [frontend-dockerfile.md](./references/frontend-dockerfile.md)
-- 🐍 **FastAPI Dockerfile**: [fastapi-dockerfile.md](./references/fastapi-dockerfile.md)
-- 🐳 **Compose Dev Environment**: [docker-compose-dev.md](./references/docker-compose-dev.md)
-- 🚦 **Traefik Stack**: [compose-traefik-postgres-redis.md](./references/compose-traefik-postgres-redis.md)
-- 🩺 **Healthchecks & Networks**: [healthchecks-and-networks.md](./references/healthchecks-and-networks.md)
+- **Multi-Stage Builds**: [multi-stage-builds.md](./references/multi-stage-builds.md)
+- **Non-Root Security**: [security-and-non-root.md](./references/security-and-non-root.md)
+- **Frontend Dockerfile**: [frontend-dockerfile.md](./references/frontend-dockerfile.md)
+- **FastAPI Dockerfile**: [fastapi-dockerfile.md](./references/fastapi-dockerfile.md)
+- **Compose Dev Environment**: [docker-compose-dev.md](./references/docker-compose-dev.md)
+- **Traefik Stack**: [compose-traefik-postgres-redis.md](./references/compose-traefik-postgres-redis.md)
+- **Healthchecks & Networks**: [healthchecks-and-networks.md](./references/healthchecks-and-networks.md)
 
 ---
 
-## 🧭 1. Docker Architectural Decision Matrix
+## 1. Docker Architectural Decision Matrix
 
 | Domain / Responsibility | Standard Pattern | Architectural Rule |
 | :--- | :--- | :--- |
@@ -46,7 +47,7 @@ This document serves as the containerization decision matrix and Dockerfile spec
 
 ---
 
-## 🛠️ 2. Production Code Standard Pattern
+## 2. Production Code Standard Pattern
 
 ```dockerfile
 # Multi-stage Dockerfile for FastAPI (ghcr.io/astral-sh/uv)
@@ -74,16 +75,16 @@ CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
 
 ---
 
-## 🚫 Forbidden Anti-Patterns
+## Forbidden Anti-Patterns
 
-- ❌ **Running as Root**: Leaving default `root` user active in production container instances.
-- ❌ **Single-Stage Heavy Images**: Packaging build compilers (gcc, g++, npm cache) into final runner images.
-- ❌ **Exposing Databases Publicly**: Mapping database ports (`5432:5432`) to `0.0.0.0` in production stacks.
-- ❌ **Missing Healthcheck Configurations**: Deploying services without `healthcheck` declarations in Compose files.
+- **Running as Root**: Leaving default `root` user active in production container instances.
+- **Single-Stage Heavy Images**: Packaging build compilers (gcc, g++, npm cache) into final runner images.
+- **Exposing Databases Publicly**: Mapping database ports (`5432:5432`) to `0.0.0.0` in production stacks.
+- **Missing Healthcheck Configurations**: Deploying services without `healthcheck` declarations in Compose files.
 
 ---
 
-## 🔍 Verification & Quality Assurance
+## Verification & Quality Assurance
 
 - **Image Lint Assertion**: Run `hadolint Dockerfile` verifying zero security warnings.
 - **Runtime Health Check**: Run `docker compose ps` asserting all services reach `healthy` status.

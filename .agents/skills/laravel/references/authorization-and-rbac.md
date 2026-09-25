@@ -1,10 +1,10 @@
 # Laravel Authorization & RBAC Policies
 
-## 📌 Core Philosophy & Constraints
+## Core Philosophy & Constraints
 - **Laravel Policy Classes**: Define explicit resource policies for authorization checks (`OrderPolicy`).
 - **Tenant Scope Guard**: Always verify `$user->tenant_id === $model->tenant_id` before granting access.
 
-## ⚡ Production Boilerplate / Standard Pattern
+## Production Boilerplate / Standard Pattern
 
 ```php
 <?php
@@ -26,5 +26,9 @@ final class OrderPolicy
 }
 ```
 
-## 🚫 Forbidden Anti-Patterns
-- ❌ **Inline Controller Authorization**: Writing `if ($user->role !== 'admin')` directly inside controller methods.
+## Forbidden Anti-Patterns
+- **Inline Controller Authorization**: Writing `if ($user->role !== 'admin')` directly inside controller methods.
+- **Cross-Tenant Data Exposure**: Authorizing access without checking `$user->tenant_id === $model->tenant_id`.
+
+## Verification & Testing
+- **Policy Pest Tests**: Write Pest test scenarios asserting `actingAs($user)->getJson(...)` returns 403 Forbidden for unauthorized users and 200 OK for authorized users.

@@ -1,9 +1,9 @@
-## 📌 Core Philosophy & Constraints
+## Core Philosophy & Constraints
 - **Correlation ID Propagation**: Every incoming HTTP request MUST be assigned a unique `correlation_id` (`X-Request-ID`).
 - **End-to-End Tracing**: The correlation ID MUST propagate across HTTP responses, database queries, and async queue jobs.
 - **Context Availability**: Logs emitted anywhere within a request lifecycle MUST automatically bind the active request context.
 
-## ⚡ Production Boilerplate / Standard Pattern
+## Production Boilerplate / Standard Pattern
 
 ### FastAPI ASGI Correlation Middleware
 ```python
@@ -24,11 +24,11 @@ class CorrelationIdMiddleware(BaseHTTPMiddleware):
         return response
 ```
 
-## 🚫 Forbidden Anti-Patterns
-- ❌ **Dropping Context Across Async Boundaries**: Launching background threads/tasks without copying `contextvars`.
-- ❌ **Generating New IDs Internally**: Overwriting an incoming `X-Request-ID` header supplied by an API gateway.
-- ❌ **Missing Response Headers**: Failing to return the correlation ID back to client API consumers.
+## Forbidden Anti-Patterns
+- **Dropping Context Across Async Boundaries**: Launching background threads/tasks without copying `contextvars`.
+- **Generating New IDs Internally**: Overwriting an incoming `X-Request-ID` header supplied by an API gateway.
+- **Missing Response Headers**: Failing to return the correlation ID back to client API consumers.
 
-## 🔍 Verification & Testing
+## Verification & Testing
 - **Header Propagation Test**: Send `curl -H "X-Request-ID: test-id-123" http://localhost:8000/api/v1/healthz` and assert response header `X-Request-ID: test-id-123`.
 - **Log Correlation Test**: Assert all logs emitted during test request contain `correlation_id: test-id-123`.

@@ -1,9 +1,9 @@
-## 📌 Core Philosophy & Constraints
+## Core Philosophy & Constraints
 - **Global Auth Guard**: Intercept all route transitions in `beforeEach` to validate authentication state.
 - **RBAC Policy Check**: Verify current user roles match target `route.meta.roles`.
 - **Title Updates**: Update document HTML title automatically on route navigation.
 
-## ⚡ Production Boilerplate / Standard Pattern
+## Production Boilerplate / Standard Pattern
 
 ```typescript
 // src/router/guards.ts
@@ -11,7 +11,7 @@ import type { Router } from 'vue-router';
 import { useAuthStore } from '@/stores/useAuthStore';
 
 export function setupNavigationGuards(router: Router): void {
-  router.beforeEach((to, from, next) => {
+ router.beforeEach((to, from, next) => {
     const authStore = useAuthStore();
 
     // 1. Dynamic Page Title
@@ -36,14 +36,14 @@ export function setupNavigationGuards(router: Router): void {
     }
 
     next();
-  });
+ });
 }
 ```
 
-## 🚫 Forbidden Anti-Patterns
-- ❌ **Multiple `next()` Calls**: Calling `next()` multiple times in a single guard execution path.
-- ❌ **Client-Side Auth Only Guarding**: Relying exclusively on route guards without backend API authorization checks.
-- ❌ **Infinite Redirect Loops**: Redirecting unauthenticated users to a login path that also requires auth.
+## Forbidden Anti-Patterns
+- **Multiple `next()` Calls**: Calling `next()` multiple times in a single guard execution path.
+- **Client-Side Auth Only Guarding**: Relying exclusively on route guards without backend API authorization checks.
+- **Infinite Redirect Loops**: Redirecting unauthenticated users to a login path that also requires auth.
 
-## 🔍 Verification & Testing
+## Verification & Testing
 - **Guard Unit Test**: Mock `useAuthStore` and verify `router.push('/admin')` redirects unauthenticated users to `/login`.

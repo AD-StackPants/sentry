@@ -1,6 +1,7 @@
 ---
 name: laravel
-description: "Laravel 12+ enterprise API architecture, Sanctum, Reverb, Actions/Resources, and Pest testing guidelines."
+description: >-
+ Use this skill whenever building, modifying, or testing PHP backend APIs, Laravel 12 controllers, single-purpose Action classes, Eloquent models, FormRequests, JSON Resources, Sanctum authentication, Reverb WebSockets, Redis queues, or Pest 4 test suites.
 ---
 
 
@@ -10,7 +11,7 @@ This document serves as the master decision matrix and architecture reference fo
 
 ---
 
-## 🛠️ Tech Stack & Version Manifest
+## Tech Stack & Version Manifest
 
 - **Language / Runtime**: PHP 8.2 / 8.3 / 8.4 (Strict Types `declare(strict_types=1);`)
 - **Core Framework**: Laravel 12+
@@ -22,32 +23,32 @@ This document serves as the master decision matrix and architecture reference fo
 
 ---
 
-## 🔗 Sub-Skill Deep Dive References
+## Sub-Skill Deep Dive References
 
-- 🏗️ **Controllers & Actions**: [controllers-and-actions.md](./references/controllers-and-actions.md)
-- 📦 **Services & Repositories**: [services-and-repositories.md](./references/services-and-repositories.md)
-- 🛡️ **Middleware & Requests**: [middleware-and-requests.md](./references/middleware-and-requests.md)
-- 🌐 **REST Endpoints v1**: [rest-endpoints-v1.md](./references/rest-endpoints-v1.md)
-- 🔑 **Authentication & Sanctum Tokens**: [authentication-and-sanctum.md](./references/authentication-and-sanctum.md)
-- 🛡️ **Authorization & RBAC Policies**: [authorization-and-rbac.md](./references/authorization-and-rbac.md)
-- 🍪 **Session Security**: [session-security.md](./references/session-security.md)
-- 🚦 **Rate Limiting**: [rate-limiting.md](./references/rate-limiting.md)
-- 🔒 **Security Headers**: [security.md](./references/security.md)
-- 🆔 **Correlation Middleware**: [middleware.md](./references/middleware.md)
-- 🚨 **Error Handling**: [error-handling.md](./references/error-handling.md)
-- 📄 **Request & Resources**: [request-response.md](./references/request-response.md)
-- 📑 **Pagination & Filtering**: [pagination-filter-sort.md](./references/pagination-filter-sort.md)
-- ⚡ **Queue Workers & Jobs**: [queue-workers-jobs.md](./references/queue-workers-jobs.md)
-- 📡 **Event Listeners**: [event-listeners-subscribers.md](./references/event-listeners-subscribers.md)
-- 🔌 **Reverb WebSockets**: [websockets-reverb.md](./references/websockets-reverb.md)
-- 🌐 **Resilient HTTP Clients**: [resilient-http-clients.md](./references/resilient-http-clients.md)
-- 🪝 **Webhook Receivers**: [webhook-receivers.md](./references/webhook-receivers.md)
-- 🧪 **Pest Testing**: [pest.md](./references/pest.md)
-- 🏭 **DB Factories & Fakes**: [database-factories-mocks.md](./references/database-factories-mocks.md)
+- **Controllers & Actions**: [controllers-and-actions.md](./references/controllers-and-actions.md)
+- **Services & Repositories**: [services-and-repositories.md](./references/services-and-repositories.md)
+- **Middleware & Requests**: [middleware-and-requests.md](./references/middleware-and-requests.md)
+- **REST Endpoints v1**: [rest-endpoints-v1.md](./references/rest-endpoints-v1.md)
+- **Authentication & Sanctum Tokens**: [authentication-and-sanctum.md](./references/authentication-and-sanctum.md)
+- **Authorization & RBAC Policies**: [authorization-and-rbac.md](./references/authorization-and-rbac.md)
+- **Session Security**: [session-security.md](./references/session-security.md)
+- **Rate Limiting**: [rate-limiting.md](./references/rate-limiting.md)
+- **Security Headers**: [security.md](./references/security.md)
+- **Correlation Middleware**: [middleware.md](./references/middleware.md)
+- **Error Handling**: [error-handling.md](./references/error-handling.md)
+- **Request & Resources**: [request-response.md](./references/request-response.md)
+- **Pagination & Filtering**: [pagination-filter-sort.md](./references/pagination-filter-sort.md)
+- **Queue Workers & Jobs**: [queue-workers-jobs.md](./references/queue-workers-jobs.md)
+- **Event Listeners**: [event-listeners-subscribers.md](./references/event-listeners-subscribers.md)
+- **Reverb WebSockets**: [websockets-reverb.md](./references/websockets-reverb.md)
+- **Resilient HTTP Clients**: [resilient-http-clients.md](./references/resilient-http-clients.md)
+- **Webhook Receivers**: [webhook-receivers.md](./references/webhook-receivers.md)
+- **Pest Testing**: [pest.md](./references/pest.md)
+- **DB Factories & Fakes**: [database-factories-mocks.md](./references/database-factories-mocks.md)
 
 ---
 
-## 🧭 1. Laravel Architecture & Decision Matrix
+## 1. Laravel Architecture & Decision Matrix
 
 | Layer / Responsibility | Standard Class Type | Architectural Rule |
 | :--- | :--- | :--- |
@@ -61,7 +62,7 @@ This document serves as the master decision matrix and architecture reference fo
 
 ---
 
-## 🛠️ 2. Production Code Standard Pattern
+## 2. Production Code Standard Pattern
 
 ```php
 <?php
@@ -88,24 +89,24 @@ final class CreateOrderController
         );
 
         return OrderResource::make($order)
-            ->response()
-            ->setStatusCode(Response::HTTP_CREATED);
+            - >response()
+            - >setStatusCode(Response::HTTP_CREATED);
     }
 }
 ```
 
 ---
 
-## 🚫 Forbidden Anti-Patterns
+## Forbidden Anti-Patterns
 
-- ❌ **Fat Controllers**: Writing raw Eloquent queries or business logic directly inside HTTP controller methods.
-- ❌ **Legacy PHPUnit Class Syntax**: Writing `class OrderTest extends TestCase` instead of Pest 4.x functional syntax (`test()`, `expect()`).
-- ❌ **Unprotected API Endpoints**: Omitting Sanctum bearer token middleware or authorization policies on sensitive mutations.
-- ❌ **Direct Database Writes in Routes**: Executing database mutations directly inside `routes/api.php` closures.
+- **Fat Controllers**: Writing raw Eloquent queries or business logic directly inside HTTP controller methods.
+- **Legacy PHPUnit Class Syntax**: Writing `class OrderTest extends TestCase` instead of Pest 4.x functional syntax (`test()`, `expect()`).
+- **Unprotected API Endpoints**: Omitting Sanctum bearer token middleware or authorization policies on sensitive mutations.
+- **Direct Database Writes in Routes**: Executing database mutations directly inside `routes/api.php` closures.
 
 ---
 
-## 🔍 Verification & Quality Assurance
+## Verification & Quality Assurance
 
 - **Pest 4 Test Execution**: `./vendor/bin/pest` verifying 100% pass rate under parallel execution (`--parallel`).
 - **PHPStan Static Analysis**: `./vendor/bin/phpstan analyse --level=8` verifying strict type hints across all Action classes.

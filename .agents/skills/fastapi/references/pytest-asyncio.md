@@ -1,9 +1,9 @@
-## 📌 Core Philosophy & Constraints
+## Core Philosophy & Constraints
 - **Pytest AsyncIO Suite**: Use `@pytest.mark.asyncio` for async test cases.
 - **HTTPX AsyncClient Fixtures**: Use `httpx.AsyncClient` for testing FastAPI routes.
 - **Scope-Isolated Fixtures**: Use `async_session` fixture yielding clean database state per test.
 
-## ⚡ Production Boilerplate / Standard Pattern
+## Production Boilerplate / Standard Pattern
 
 ```python
 # tests/conftest.py
@@ -36,10 +36,10 @@ async def test_create_order(async_client: AsyncClient):
     assert data["customer_email"] == "test@example.com"
 ```
 
-## 🚫 Forbidden Anti-Patterns
-- ❌ **Using Synchronous `TestClient` for Async Endpoints**: Testing async endpoints with `starlette.testclient.TestClient` causing deadlocks.
-- ❌ **Shared Database State**: Leaking created records across tests without fixture teardowns.
-- ❌ **Missing Asyncio Marker**: Forgetting `@pytest.mark.asyncio` on `async def test_xxx()` functions.
+## Forbidden Anti-Patterns
+- **Using Synchronous `TestClient` for Async Endpoints**: Testing async endpoints with `starlette.testclient.TestClient` causing deadlocks.
+- **Shared Database State**: Leaking created records across tests without fixture teardowns.
+- **Missing Asyncio Marker**: Forgetting `@pytest.mark.asyncio` on `async def test_xxx()` functions.
 
-## 🔍 Verification & Testing
+## Verification & Testing
 - **Execution Command**: `pytest tests/` asserting clean async test passes.

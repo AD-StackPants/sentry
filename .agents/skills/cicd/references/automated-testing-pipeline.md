@@ -1,21 +1,21 @@
-## 📌 Core Philosophy & Constraints
+## Core Philosophy & Constraints
 - **Matrix Testing**: Test across target runtime versions (Node 20/22, Python 3.11/3.12, PHP 8.2/8.3).
 - **Fast Dependency Caching**: Use official setup action caching (`cache: 'pip'`, `cache: 'npm'`, `setup-uv`).
 - **Parallel Test Execution**: Run unit and integration tests in parallel jobs to minimize CI execution time.
 
-## ⚡ Production Boilerplate / Standard Pattern
+## Production Boilerplate / Standard Pattern
 
 ```yaml
 name: Automated Testing Pipeline
 
 on:
-  push:
+ push:
     branches: [main, staging, production]
-  pull_request:
+ pull_request:
     branches: [main, staging, production]
 
 jobs:
-  python-test-matrix:
+ python-test-matrix:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -48,10 +48,10 @@ jobs:
         run: uv run pytest tests/
 ```
 
-## 🚫 Forbidden Anti-Patterns
-- ❌ **Uncached Dependency Downloads**: Re-downloading npm or pip packages on every CI run without cache actions.
-- ❌ **Sequential Matrix Testing**: Running version matrix tests sequentially instead of parallel GitHub jobs.
-- ❌ **Bypassing Tests for PRs**: Merging PRs without requiring green automated test suite passes.
+## Forbidden Anti-Patterns
+- **Uncached Dependency Downloads**: Re-downloading npm or pip packages on every CI run without cache actions.
+- **Sequential Matrix Testing**: Running version matrix tests sequentially instead of parallel GitHub jobs.
+- **Bypassing Tests for PRs**: Merging PRs without requiring green automated test suite passes.
 
-## 🔍 Verification & Testing
+## Verification & Testing
 - **CI Matrix Assertion**: Verify GitHub Actions workflow runs matrix jobs in parallel and passes cleanly.

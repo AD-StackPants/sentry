@@ -1,9 +1,9 @@
-## 📌 Core Philosophy & Constraints
+## Core Philosophy & Constraints
 - **Domain Event Decoupling**: Fire domain events (`OrderCreated`) to decouple core business logic from auxiliary actions (analytics, notifications).
 - **Queued Listeners**: Implement `ShouldQueue` on event listeners for asynchronous execution.
 - **Event Subscribers**: Group related event handlers using Event Subscriber classes.
 
-## ⚡ Production Boilerplate / Standard Pattern
+## Production Boilerplate / Standard Pattern
 
 ```php
 <?php
@@ -42,10 +42,10 @@ final class SendOrderNotification implements ShouldQueue
 }
 ```
 
-## 🚫 Forbidden Anti-Patterns
-- ❌ **Tightly Coupled Side Effects**: Writing notification email code directly in the order creation service action.
-- ❌ **Synchronous Heavy Listeners**: Omitting `ShouldQueue` on event listeners executing external HTTP calls.
-- ❌ **Modifying Event Data in Listeners**: Mutating event payload objects in listeners causing side-effects for subsequent listeners.
+## Forbidden Anti-Patterns
+- **Tightly Coupled Side Effects**: Writing notification email code directly in the order creation service action.
+- **Synchronous Heavy Listeners**: Omitting `ShouldQueue` on event listeners executing external HTTP calls.
+- **Modifying Event Data in Listeners**: Mutating event payload objects in listeners causing side-effects for subsequent listeners.
 
-## 🔍 Verification & Testing
+## Verification & Testing
 - **Pest Event Fake**: Use `Event::fake()` in Pest tests asserting `OrderCreated` event was dispatched.

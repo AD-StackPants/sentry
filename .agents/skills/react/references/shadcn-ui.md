@@ -1,9 +1,9 @@
-## 📌 Core Philosophy & Constraints
+## Core Philosophy & Constraints
 - **Radix UI Primitives**: Build Shadcn UI components wrapping Radix UI headless components.
 - **Class Variance Authority (CVA)**: Manage variant styles (`default`, `outline`, `destructive`) with `cva()`.
 - **Class Merging**: Combine conditional Tailwind classes safely using `cn(clsx, twMerge)`.
 
-## ⚡ Production Boilerplate / Standard Pattern
+## Production Boilerplate / Standard Pattern
 
 ```typescript
 // src/lib/utils.ts
@@ -11,7 +11,7 @@ import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
+ return twMerge(clsx(inputs));
 }
 ```
 
@@ -23,8 +23,8 @@ import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50',
-  {
+ 'inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50',
+ {
     variants: {
       variant: {
         default: 'bg-primary text-primary-foreground hover:bg-primary/90',
@@ -41,17 +41,17 @@ const buttonVariants = cva(
       variant: 'default',
       size: 'default',
     },
-  }
+ }
 );
 
 export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
+ extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
-  asChild?: boolean;
+ asChild?: boolean;
 }
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
+ ({ className, variant, size, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : 'button';
     return (
       <Comp
@@ -60,15 +60,15 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {...props}
       />
     );
-  }
+ }
 );
 Button.displayName = 'Button';
 ```
 
-## 🚫 Forbidden Anti-Patterns
-- ❌ **Inline CSS Styles**: Writing `style={{ margin: 10 }}` instead of using Tailwind utility classes.
-- ❌ **Omitted Forward Ref**: Forgetting `React.forwardRef` on primitive wrappers preventing parent ref access.
-- ❌ **Overriding Shadcn CSS Variables Manually**: Modifying raw `.css` output files directly instead of updating Tailwind config design tokens.
+## Forbidden Anti-Patterns
+- **Inline CSS Styles**: Writing `style={{ margin: 10 }}` instead of using Tailwind utility classes.
+- **Omitted Forward Ref**: Forgetting `React.forwardRef` on primitive wrappers preventing parent ref access.
+- **Overriding Shadcn CSS Variables Manually**: Modifying raw `.css` output files directly instead of updating Tailwind config design tokens.
 
-## 🔍 Verification & Testing
+## Verification & Testing
 - **Visual Variant Assertion**: Test rendered button classes with RTL asserting `buttonVariants({ variant: 'outline' })` applies `border-input`.

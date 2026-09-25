@@ -1,9 +1,9 @@
-## 📌 Core Philosophy & Constraints
+## Core Philosophy & Constraints
 - **Two-Way Binding (`v-model`)**: Standardize two-way state using `defineModel()`.
 - **Slot Composition**: Use named and scoped slots (`<slot :item="item">`) for flexible component layouts.
 - **Strict Injection**: Use InjectionKeys for `provide`/`inject` with fallback handling.
 
-## ⚡ Production Boilerplate / Standard Pattern
+## Production Boilerplate / Standard Pattern
 
 ```vue
 <script setup lang="ts" generic="T extends { id: string | number }">
@@ -14,8 +14,8 @@ const modelValue = defineModel<string>({ required: true });
 
 // Component Props & Generic Slot Binding
 defineProps<{
-  items: T[];
-  title?: string;
+ items: T[];
+ title?: string;
 }>();
 
 // Strongly-Typed Inject
@@ -24,7 +24,7 @@ const activeTheme = inject(ThemeKey, 'light');
 </script>
 
 <template>
-  <div class="custom-card border p-4 rounded-lg" :class="activeTheme">
+ <div class="custom-card border p-4 rounded-lg" :class="activeTheme">
     <h3 v-if="title" class="font-bold text-lg mb-2">{{ title }}</h3>
 
     <input
@@ -41,14 +41,14 @@ const activeTheme = inject(ThemeKey, 'light');
         </slot>
       </li>
     </ul>
-  </div>
+ </div>
 </template>
 ```
 
-## 🚫 Forbidden Anti-Patterns
-- ❌ **Legacy `v-model` Event Handling**: Manually creating `:modelValue` and `@update:modelValue` instead of `defineModel()`.
-- ❌ **Untyped Provide/Inject**: Using string keys (`provide('theme', 'dark')`) causing injection type loss.
-- ❌ **Overusing `provide`/`inject`**: Using injection for local parent-child communication instead of props/emits.
+## Forbidden Anti-Patterns
+- **Legacy `v-model` Event Handling**: Manually creating `:modelValue` and `@update:modelValue` instead of `defineModel()`.
+- **Untyped Provide/Inject**: Using string keys (`provide('theme', 'dark')`) causing injection type loss.
+- **Overusing `provide`/`inject`**: Using injection for local parent-child communication instead of props/emits.
 
-## 🔍 Verification & Testing
+## Verification & Testing
 - **Vue Test Utils**: Test model updates asserting `wrapper.setValue()` triggers model binding change.

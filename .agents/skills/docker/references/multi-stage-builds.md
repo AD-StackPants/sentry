@@ -1,9 +1,9 @@
-## 📌 Core Philosophy & Constraints
+## Core Philosophy & Constraints
 - **Multi-Stage Build Targets**: Separate dependency compilation stages from lean production runtime images.
 - **Node 25 Alpine Builder**: Use `node:25-alpine` for fast Node.js asset building and compilation stages.
 - **Layer Cache Optimization**: Copy `package*.json` before copying application code for cached `npm install`.
 
-## ⚡ Production Boilerplate / Standard Pattern
+## Production Boilerplate / Standard Pattern
 
 ```dockerfile
 # Stage 1: Build & Compile Dependencies
@@ -27,10 +27,10 @@ EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
 ```
 
-## 🚫 Forbidden Anti-Patterns
-- ❌ **Single Monolithic Stage**: Including build toolchains (gcc, node_modules build artifacts) in final runtime images.
-- ❌ **Copying Source Before Lockfile**: Placing `COPY . .` before `npm install` invalidating Docker layer caching.
-- ❌ **Heavy Base Images**: Using full OS images like `ubuntu:latest` for simple web servers.
+## Forbidden Anti-Patterns
+- **Single Monolithic Stage**: Including build toolchains (gcc, node_modules build artifacts) in final runtime images.
+- **Copying Source Before Lockfile**: Placing `COPY . .` before `npm install` invalidating Docker layer caching.
+- **Heavy Base Images**: Using full OS images like `ubuntu:latest` for simple web servers.
 
-## 🔍 Verification & Testing
+## Verification & Testing
 - **Image Size Inspection**: `docker image ls` verifying production image size is < 50MB for static apps / < 200MB for Python/Node apps.

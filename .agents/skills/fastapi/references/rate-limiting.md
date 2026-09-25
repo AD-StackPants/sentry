@@ -1,9 +1,9 @@
-## 📌 Core Philosophy & Constraints
+## Core Philosophy & Constraints
 - **SlowAPI Rate Limiter**: Use SlowAPI rate limiter backed by Redis storage.
 - **Client Identifier Keys**: Limit requests based on client IP address (`get_remote_address`) or authenticated user ID.
 - **Standard Error Payload**: Return HTTP 429 status code with clear retry-after headers.
 
-## ⚡ Production Boilerplate / Standard Pattern
+## Production Boilerplate / Standard Pattern
 
 ```python
 from fastapi import FastAPI, Request
@@ -28,10 +28,10 @@ async def login(request: Request):
     return {"message": "Login attempt processed"}
 ```
 
-## 🚫 Forbidden Anti-Patterns
-- ❌ **In-Memory Rate Limiting in Multi-Worker Setup**: Using local memory limiters across multi-process Gunicorn/Uvicorn deployments.
-- ❌ **Missing Request Parameter in Limited Routes**: Omitting mandatory `request: Request` parameter on `@limiter.limit()` routes.
-- ❌ **Unthrottled Public Write Endpoints**: Leaving registration or password reset routes un-throttled.
+## Forbidden Anti-Patterns
+- **In-Memory Rate Limiting in Multi-Worker Setup**: Using local memory limiters across multi-process Gunicorn/Uvicorn deployments.
+- **Missing Request Parameter in Limited Routes**: Omitting mandatory `request: Request` parameter on `@limiter.limit()` routes.
+- **Unthrottled Public Write Endpoints**: Leaving registration or password reset routes un-throttled.
 
-## 🔍 Verification & Testing
+## Verification & Testing
 - **Pytest Rate Limit Assertion**: Execute 6 requests on `@limiter.limit("5/minute")` endpoint in Pytest verifying 6th request yields HTTP 429.

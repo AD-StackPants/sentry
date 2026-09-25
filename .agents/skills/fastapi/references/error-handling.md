@@ -1,9 +1,9 @@
-## 📌 Core Philosophy & Constraints
+## Core Philosophy & Constraints
 - **RFC 7807 Problem Details Handlers**: Global exception handlers MUST output `application/problem+json` format.
 - **Custom Application Exceptions**: Inherit domain errors from base `DomainException` classes.
 - **Pydantic Validation Format**: Override default `RequestValidationError` to return standardized field error dictionaries.
 
-## ⚡ Production Boilerplate / Standard Pattern
+## Production Boilerplate / Standard Pattern
 
 ```python
 from fastapi import FastAPI, Request, status
@@ -47,10 +47,10 @@ def setup_exception_handlers(app: FastAPI):
         )
 ```
 
-## 🚫 Forbidden Anti-Patterns
-- ❌ **Uncaught Exceptions in Routers**: Allowing raw 500 Unhandled Exceptions to leak internal Python stack traces.
-- ❌ **Inconsistent Validation Payload Keys**: Returning raw Pydantic `loc` tuples without converting to dot-notation strings.
-- ❌ **Status 200 with Error JSON**: Returning status 200 HTTP codes while payload contains `{ "error": true }`.
+## Forbidden Anti-Patterns
+- **Uncaught Exceptions in Routers**: Allowing raw 500 Unhandled Exceptions to leak internal Python stack traces.
+- **Inconsistent Validation Payload Keys**: Returning raw Pydantic `loc` tuples without converting to dot-notation strings.
+- **Status 200 with Error JSON**: Returning status 200 HTTP codes while payload contains `{ "error": true }`.
 
-## 🔍 Verification & Testing
+## Verification & Testing
 - **Pytest Error Payload Test**: Trigger 422 validation error in Pytest asserting response header `Content-Type: application/problem+json`.

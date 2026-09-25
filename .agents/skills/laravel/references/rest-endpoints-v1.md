@@ -1,9 +1,9 @@
-## 📌 Core Philosophy & Constraints
+## Core Philosophy & Constraints
 - **RESTful API Versioning**: All API routes MUST be versioned under `routes/api/v1.php` with `/api/v1/` prefix.
 - **Noun-Based Endpoints**: Route paths MUST use plural nouns (`/api/v1/orders`, `/api/v1/users`).
 - **Standard HTTP Verbs**: `GET` (read), `POST` (create), `PUT`/`PATCH` (update), `DELETE` (destroy).
 
-## ⚡ Production Boilerplate / Standard Pattern
+## Production Boilerplate / Standard Pattern
 
 ```php
 <?php
@@ -21,10 +21,10 @@ Route::prefix('v1')->middleware(['auth:sanctum', 'throttle:api'])->group(functio
 });
 ```
 
-## 🚫 Forbidden Anti-Patterns
-- ❌ **Verb-Based Path URLs**: Creating routes like `/api/v1/create-order` or `/api/v1/getOrders`.
-- ❌ **Unversioned API Routes**: Defining API routes directly in `web.php` or omitting version prefixes.
-- ❌ **Mixed Response Types**: Returning HTML views or plain text strings from API v1 routes.
+## Forbidden Anti-Patterns
+- **Verb-Based Path URLs**: Creating routes like `/api/v1/create-order` or `/api/v1/getOrders`.
+- **Unversioned API Routes**: Defining API routes directly in `web.php` or omitting version prefixes.
+- **Mixed Response Types**: Returning HTML views or plain text strings from API v1 routes.
 
-## 🔍 Verification & Testing
+## Verification & Testing
 - **Pest Route Test**: `getJson('/api/v1/orders')` asserting 200 OK and valid JSON response content-type.

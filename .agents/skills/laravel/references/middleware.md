@@ -1,9 +1,9 @@
-## 📌 Core Philosophy & Constraints
+## Core Philosophy & Constraints
 - **Correlation ID Middleware**: Assign and propagate `X-Request-ID` UUID headers across request lifecycles.
 - **Request Context Binding**: Store trace IDs in Log context to bind every log entry to the active request.
 - **Laravel 12 Bootstrap**: Register global middleware in `bootstrap/app.php`.
 
-## ⚡ Production Boilerplate / Standard Pattern
+## Production Boilerplate / Standard Pattern
 
 ```php
 <?php
@@ -36,10 +36,10 @@ final class CorrelationIdMiddleware
 }
 ```
 
-## 🚫 Forbidden Anti-Patterns
-- ❌ **Dropping Trace Headers**: Overwriting incoming `X-Request-ID` headers with newly generated UUIDs.
-- ❌ **Inline Middleware Logic in Controllers**: Embedding request timing or correlation logging directly inside controller methods.
-- ❌ **Modifying Sealed Request Objects**: Overwriting `$request` parameters destructively without `$request->merge()`.
+## Forbidden Anti-Patterns
+- **Dropping Trace Headers**: Overwriting incoming `X-Request-ID` headers with newly generated UUIDs.
+- **Inline Middleware Logic in Controllers**: Embedding request timing or correlation logging directly inside controller methods.
+- **Modifying Sealed Request Objects**: Overwriting `$request` parameters destructively without `$request->merge()`.
 
-## 🔍 Verification & Testing
+## Verification & Testing
 - **Pest Header Propagation**: Send `X-Request-ID: test-123` header in Pest request asserting response contains `X-Request-ID: test-123`.

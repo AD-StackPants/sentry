@@ -1,9 +1,9 @@
-## 📌 Core Philosophy & Constraints
+## Core Philosophy & Constraints
 - **RED Metrics**: Standardize API monitoring on **R**ate (req/sec), **E**rrors (failed/sec), and **D**uration (latency histogram).
 - **Mandatory Health Probe**: Applications MUST expose `/healthz` (liveness) and `/readyz` (readiness) endpoints.
 - **Actionable Alerts**: Alerts MUST be tied to customer-impacting SLOs, not transient CPU spikes.
 
-## ⚡ Production Boilerplate / Standard Pattern
+## Production Boilerplate / Standard Pattern
 
 ### FastAPI Prometheus & Health Check Setup
 ```python
@@ -30,11 +30,11 @@ async def metrics_endpoint():
     return Response(content=generate_latest(), media_type=CONTENT_TYPE_LATEST)
 ```
 
-## 🚫 Forbidden Anti-Patterns
-- ❌ **Missing Database Check in Readiness**: Returning HTTP 200 on `/readyz` when backend database connections are down.
-- ❌ **High-Cardinality Metric Labels**: Adding unique IDs or emails as Prometheus label values.
-- ❌ **Alerting on Warnings**: Triggering PagerDuty alerts for non-critical warning logs.
+## Forbidden Anti-Patterns
+- **Missing Database Check in Readiness**: Returning HTTP 200 on `/readyz` when backend database connections are down.
+- **High-Cardinality Metric Labels**: Adding unique IDs or emails as Prometheus label values.
+- **Alerting on Warnings**: Triggering PagerDuty alerts for non-critical warning logs.
 
-## 🔍 Verification & Testing
+## Verification & Testing
 - **Probe Test**: Execute `curl -i http://localhost:8000/readyz` expecting status 200 when dependencies are healthy.
 - **Metrics Scraping Test**: Verify `/metrics` exposes `http_requests_total` counter.

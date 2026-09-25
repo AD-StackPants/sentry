@@ -1,9 +1,9 @@
-## 📌 Core Philosophy & Constraints
+## Core Philosophy & Constraints
 - **Secure Cookie Flags**: Session cookies MUST set `samesite="lax"` or `"strict"`, `secure=True`, and `httponly=True`.
 - **Token Revocation List (TRL)**: Store revoked token IDs (JTI) in Redis with TTL matching token expiry.
 - **CSRF Protection**: Enforce CSRF token verification for cookie-authenticated API endpoints.
 
-## ⚡ Production Boilerplate / Standard Pattern
+## Production Boilerplate / Standard Pattern
 
 ```python
 import redis.asyncio as redis
@@ -29,10 +29,10 @@ def set_auth_cookie(response: Response, token: str) -> None:
     )
 ```
 
-## 🚫 Forbidden Anti-Patterns
-- ❌ **HttpOnly Flag Omission**: Setting `httponly=False` exposing access cookies to XSS script theft.
-- ❌ **Unflagged `samesite="none"`**: Setting `samesite="none"` without enforcing `secure=True` HTTPS.
-- ❌ **No Token Revocation Ability**: Inability to invalidate user access tokens upon password reset or logout.
+## Forbidden Anti-Patterns
+- **HttpOnly Flag Omission**: Setting `httponly=False` exposing access cookies to XSS script theft.
+- **Unflagged `samesite="none"`**: Setting `samesite="none"` without enforcing `secure=True` HTTPS.
+- **No Token Revocation Ability**: Inability to invalidate user access tokens upon password reset or logout.
 
-## 🔍 Verification & Testing
+## Verification & Testing
 - **Revocation Test**: Revoke JTI token in Redis test asserting `is_token_revoked(jti)` returns `True` in Pytest.

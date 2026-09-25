@@ -1,9 +1,9 @@
-## 📌 Core Philosophy & Constraints
+## Core Philosophy & Constraints
 - **RFC 7807 Problem Details**: All API error responses MUST strictly adhere to RFC 7807 JSON format.
 - **Unified Error Structure**: Response JSON MUST contain `type`, `title`, `status`, `detail`, `instance`, and optional `errors`.
 - **Zero Stack Traces in Production**: Internal exceptions MUST NOT leak internal traces or server filesystem paths to API clients.
 
-## ⚡ Production Boilerplate / Standard Pattern
+## Production Boilerplate / Standard Pattern
 
 ### FastAPI Global RFC 7807 Exception Handler
 ```python
@@ -37,10 +37,10 @@ async def global_exception_handler(request: Request, exc: Exception) -> JSONResp
     )
 ```
 
-## 🚫 Forbidden Anti-Patterns
-- ❌ **Inconsistent Error JSON**: Returning `{ "error": "msg" }` on some endpoints and `{ "message": "msg" }` on others.
-- ❌ **Leaking Exception Stack Traces**: Exposing Python tracebacks or PHP stack traces in response payloads.
-- ❌ **200 OK with Error Body**: Returning HTTP status code 200 while payload contains `{ "success": false }`.
+## Forbidden Anti-Patterns
+- **Inconsistent Error JSON**: Returning `{ "error": "msg" }` on some endpoints and `{ "message": "msg" }` on others.
+- **Leaking Exception Stack Traces**: Exposing Python tracebacks or PHP stack traces in response payloads.
+- **200 OK with Error Body**: Returning HTTP status code 200 while payload contains `{ "success": false }`.
 
-## 🔍 Verification & Testing
+## Verification & Testing
 - **Error Assertion Test**: Trigger 404, 422, and 500 responses and assert header `Content-Type: application/problem+json` and body field `status`.

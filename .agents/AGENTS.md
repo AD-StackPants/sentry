@@ -1,36 +1,45 @@
 # Workspace Rules: .agents/AGENTS.md
 
-## 📌 Core Philosophy & Constraints
-- **Primary System Orchestrator**: Governs code generation, architectural decisions, and agent behavior across multi-framework high-reliability SaaS systems.
-- **Strict Verification**: Never declare success without running automated verification or dry-run checks.
-- **Zero-Hallucination Policy**: Inspect authoritative source code before referencing symbols, routes, schemas, or external APIs.
-- **Domain Decoupling**: Enforce strict separation between HTTP/Controller layers and core business logic (Services/Actions).
+## Core Philosophy & Constraints
+- **Agent Execution Governance**: Enforce architectural discipline, zero-hallucination source inspection, and test-driven verification across all software engineering phases.
+- **Strict Verification Protocol**: Never mark tasks complete without executing target test suites (`pytest`, `pest`, `vitest`) and static linters (`ruff`, `phpstan`, `tsc`).
+- **Zero-Hallucination Policy**: Prohibit referencing file paths, model fields, DB schemas, or API routes without first inspecting the authoritative local source files.
+- **Domain Decoupling**: Strictly separate HTTP transport layers (APIRouter / Controllers) from core business logic (Services / Actions) and persistence models.
+- **Fail-Safe Tenancy**: Enforce `tenant_id` scoping across all database queries, mutations, and resource lookups.
 
-## ⚡ Production Boilerplate / Standard Pattern
+## Production Boilerplate / Standard Pattern
 
 ```yaml
 agent_context:
-  role: Lead Software Architect
-  domain: Enterprise SaaS System Architecture
-  frameworks:
-    frontend: ["Vue 3 (Composition API)", "React 19+"]
-    backend: ["FastAPI (Async)", "Laravel 12+"]
-    databases: ["PostgreSQL", "MySQL", "Redis", "MongoDB", "Supabase"]
-    cloud: ["AWS", "Docker", "Linux Systemd", "GitHub Actions"]
-  execution_rules:
-    - Step 1: Query relevant skill under .agents/skills/ for domain context.
-    - Step 2: Enforce strict input/output schemas (Pydantic v2 / Form Requests / Zod).
-    - Step 3: Write isolated business logic in Service/Action modules.
-    - Step 4: Verify implementation with targeted test suites (Pest / Pytest / Vitest).
+  purpose: Agentic Software Engineering Workflow
+  skill_routing_matrix:
+    governance: ".agents/skills/engineering-standards/"
+    backend_python: ".agents/skills/fastapi/"
+    backend_php: ".agents/skills/laravel/"
+    frontend_design: ".agents/skills/frontend-core/"
+    frontend_react: ".agents/skills/react/"
+    frontend_vue: ".agents/skills/vue/"
+    containers: ".agents/skills/docker/"
+    cloud_aws: ".agents/skills/aws/"
+    host_os: ".agents/skills/linux/"
+    delivery: ".agents/skills/cicd/"
+  lifecycle_execution_order:
+    - Step 1 [Inspect]: Read authoritative local files and domain SKILL.md before proposing code.
+    - Step 2 [Contracts]: Define strict Pydantic v2 / Form Request / Zod input-output schemas.
+    - Step 3 [Domain]: Implement business logic inside isolated Service or Action classes.
+    - Step 4 [Design]: Cross-reference frontend-core for strict tokens (#1976D2, rounded-lg, shadow-xs).
+    - Step 5 [Verify]: Run static analysis (ruff, phpstan, tsc) and relevant unit/feature test suites.
 ```
 
-## 🚫 Forbidden Anti-Patterns
-- ❌ **Fat Controllers/Routers**: Writing business logic or raw DB queries directly inside HTTP handlers.
-- ❌ **Silent Error Swallowing**: Using empty `except`/`catch` blocks or returning dummy fallbacks.
-- ❌ **Unverified Assumptions**: Guessing model field names, API signatures, or file paths without inspecting files.
-- ❌ **Blocking I/O in Async Contexts**: Calling synchronous DB/HTTP drivers inside FastAPI or async JS event loops.
+## Forbidden Anti-Patterns
+- **Fat Controllers / Handlers**: Placing business logic or raw database queries directly inside route handlers.
+- **Silent Error Swallowing**: Empty catch/except blocks or returning dummy fallbacks without structured logging.
+- **Unverified Assumptions**: Writing code based on guessed schemas, endpoints, or dependencies without reading source files first.
+- **Blocking I/O in Async Loops**: Using synchronous database drivers or blocking requests inside async event loops.
+- **AI Frontend Artifacts**: Purple glow orbs, decorative emojis (e.g. sparkles, rocket), generic Tailwind colors (`bg-blue-600`), or non-standard border-radius.
 
-## 🔍 Verification & Testing
-- **Skill Alignment Check**: Ensure generated code matches the constraints defined in `.agents/skills/`.
-- **Static Analysis**: Validate with Ruff/ty (FastAPI), PHPStan/Pest (Laravel), ESLint/TypeScript strict mode (Frontend).
-- **Execution Test**: Execute unit/integration test suites to confirm runtime correctness before completion.
+## Verification & Testing
+- **Cross-Skill Verification**: Confirm all code changes adhere to the domain rules in `.agents/skills/`.
+- **Static Analysis Gate**: Verify zero errors from `ruff check`, `phpstan analyse --level=8`, or `npx tsc --noEmit`.
+- **Runtime Validation**: Execute unit, integration, or feature test suites to confirm runtime correctness before completion.
+

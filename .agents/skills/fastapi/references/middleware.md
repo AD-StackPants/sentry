@@ -1,9 +1,9 @@
-## 📌 Core Philosophy & Constraints
+## Core Philosophy & Constraints
 - **Structlog Correlation Middleware**: Bind request correlation IDs to structlog context variables on every request.
 - **Request Response Tracing**: Log HTTP method, path, status code, and execution time (ms) for every API request.
 - **ASGI Compatibility**: Use Starlette `BaseHTTPMiddleware` or pure ASGI middleware wrappers.
 
-## ⚡ Production Boilerplate / Standard Pattern
+## Production Boilerplate / Standard Pattern
 
 ```python
 import time
@@ -40,10 +40,10 @@ class StructlogCorrelationMiddleware(BaseHTTPMiddleware):
         return response
 ```
 
-## 🚫 Forbidden Anti-Patterns
-- ❌ **Dropping `contextvars` Across Async Calls**: Failing to clear or bind contextvars in middleware.
-- ❌ **Mutating Original Headers**: Overwriting incoming correlation headers instead of preserving supplied upstream values.
-- ❌ **Blocking Operations in Middleware**: Performing synchronous disk/network I/O inside `dispatch()`.
+## Forbidden Anti-Patterns
+- **Dropping `contextvars` Across Async Calls**: Failing to clear or bind contextvars in middleware.
+- **Mutating Original Headers**: Overwriting incoming correlation headers instead of preserving supplied upstream values.
+- **Blocking Operations in Middleware**: Performing synchronous disk/network I/O inside `dispatch()`.
 
-## 🔍 Verification & Testing
+## Verification & Testing
 - **AsyncClient Correlation Test**: Pass `X-Request-ID: req-abc-123` in test request asserting response header `X-Request-ID: req-abc-123`.

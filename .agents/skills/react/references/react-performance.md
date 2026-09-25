@@ -1,9 +1,9 @@
-## 📌 Core Philosophy & Constraints
+## Core Philosophy & Constraints
 - **Memoization Strategy**: Use `useMemo` for expensive computations and `useCallback` for stable function references passed to memoized children.
 - **Virtualized Lists**: Use `@tanstack/react-virtual` or `react-window` for rendering large datasets (>100 items).
 - **Code Splitting**: Lazy load route pages with `React.lazy()` and `<Suspense fallback={<Spinner />}>`.
 
-## ⚡ Production Boilerplate / Standard Pattern
+## Production Boilerplate / Standard Pattern
 
 ```tsx
 import React, { type FC, useMemo, useCallback, lazy, Suspense } from 'react';
@@ -12,22 +12,22 @@ import React, { type FC, useMemo, useCallback, lazy, Suspense } from 'react';
 const HeavyDataModal = lazy(() => import('./HeavyDataModal'));
 
 interface Item {
-  id: string;
-  price: number;
+ id: string;
+ price: number;
 }
 
-export const ProductList: FC<{ items: Item[] }> = React.memo(({ items }) => {
-  // 2. Memoized Heavy Calculation
-  const totalPrice = useMemo(() => {
+export const ProductList: FC<{ items: Item[]; onSelectItem?: (id: string) => void }> = React.memo(({ items, onSelectItem }) => {
+ // 2. Memoized Heavy Calculation
+ const totalPrice = useMemo(() => {
     return items.reduce((acc, item) => acc + item.price, 0);
-  }, [items]);
+ }, [items]);
 
-  // 3. Stable Callback Reference
-  const handleItemClick = useCallback((id: string) => {
-    console.log('Clicked item:', id);
-  }, []);
+ // 3. Stable Callback Reference
+ const handleItemClick = useCallback((id: string) => {
+    onSelectItem?.(id);
+ }, [onSelectItem]);
 
-  return (
+ return (
     <div>
       <h3>Total Price: ${totalPrice}</h3>
       <ul>
@@ -42,15 +42,15 @@ export const ProductList: FC<{ items: Item[] }> = React.memo(({ items }) => {
         <HeavyDataModal />
       </Suspense>
     </div>
-  );
+ );
 });
 ProductList.displayName = 'ProductList';
 ```
 
-## 🚫 Forbidden Anti-Patterns
-- ❌ **Premature Over-Memoization**: Wrapping simple primitive functions in `useCallback` without measuring re-render costs.
-- ❌ **Rendering 1,000 DOM Nodes**: Mapping large array items directly without list virtualization.
-- ❌ **Inline Arrow Functions in Props**: Passing `onClick={() => doSomething()}` to memoized child components breaking memoization.
+## Forbidden Anti-Patterns
+- **Premature Over-Memoization**: Wrapping simple primitive functions in `useCallback` without measuring re-render costs.
+- **Rendering 1,000 DOM Nodes**: Mapping large array items directly without list virtualization.
+- **Inline Arrow Functions in Props**: Passing `onClick={() => doSomething()}` to memoized child components breaking memoization.
 
-## 🔍 Verification & Testing
+## Verification & Testing
 - **React Profiler Check**: Verify component render duration remains < 16ms during parent state updates.

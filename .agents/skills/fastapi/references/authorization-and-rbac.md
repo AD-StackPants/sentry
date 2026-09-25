@@ -1,11 +1,11 @@
 # FastAPI Authorization & RBAC Permissions
 
-## 📌 Core Philosophy & Constraints
+## Core Philosophy & Constraints
 - **Role-Based Access Control (RBAC)**: Assign permissions to roles, and roles to users (`User -> Roles -> Permissions`).
 - **Granular Permission Scopes**: Use colon-separated resource permission scopes (`invoices:create`, `users:delete`).
 - **Tenant Scope Guard**: Always evaluate RBAC policies within the context of the active user's `tenant_id`.
 
-## ⚡ Production Boilerplate / Standard Pattern
+## Production Boilerplate / Standard Pattern
 
 ```python
 from typing import Annotated
@@ -40,6 +40,9 @@ class PermissionChecker:
         return current_user
 ```
 
-## 🚫 Forbidden Anti-Patterns
-- ❌ **Hardcoded Role Checks**: Checking `if user.role == 'manager'` inline inside router handlers.
-- ❌ **Cross-Tenant Data Exposure**: Granting permissions without asserting resource `tenant_id == current_user.tenant_id`.
+## Forbidden Anti-Patterns
+- **Hardcoded Role Checks**: Checking `if user.role == 'manager'` inline inside router handlers.
+- **Cross-Tenant Data Exposure**: Granting permissions without asserting resource `tenant_id == current_user.tenant_id`.
+
+## Verification & Testing
+- **RBAC Matrix Tests**: Test endpoint access against full role-permission matrix asserting 403 Forbidden on insufficient permissions and 200 OK on authorized roles.

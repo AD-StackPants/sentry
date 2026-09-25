@@ -1,19 +1,19 @@
-## 📌 Core Philosophy & Constraints
+## Core Philosophy & Constraints
 - **Branch-Specific Deployment Jobs**: Target `staging` branch for staging deployments and `production` branch for production releases.
 - **ECS Task Definition Updating**: Render new container image tags in ECS Task Definitions via `aws-actions/amazon-ecs-render-task-definition`.
 - **Environment Protection Rules**: Require environment approvals in GitHub repository settings for production deployments.
 
-## ⚡ Production Boilerplate / Standard Pattern
+## Production Boilerplate / Standard Pattern
 
 ```yaml
 name: Deployment Workflow
 
 on:
-  push:
+ push:
     branches: [staging, production]
 
 jobs:
-  deploy-staging:
+ deploy-staging:
     if: github.ref == 'refs/heads/staging'
     runs-on: ubuntu-latest
     environment: staging
@@ -21,7 +21,7 @@ jobs:
       - name: Deploy to Staging ECS Cluster
         run: echo "Deploying image tag ${{ github.sha }} to Staging ECS..."
 
-  deploy-production:
+ deploy-production:
     if: github.ref == 'refs/heads/production'
     runs-on: ubuntu-latest
     environment: production
@@ -49,10 +49,10 @@ jobs:
           wait-for-service-stability: true
 ```
 
-## 🚫 Forbidden Anti-Patterns
-- ❌ **Unconditional Deployments**: Deploying to production on PR creation or arbitrary branch commits.
-- ❌ **Missing Service Stability Checks**: Disabling `wait-for-service-stability: true` hiding failed task rollbacks.
-- ❌ **Shared Environment Secrets**: Reusing staging API secrets in production deployment jobs.
+## Forbidden Anti-Patterns
+- **Unconditional Deployments**: Deploying to production on PR creation or arbitrary branch commits.
+- **Missing Service Stability Checks**: Disabling `wait-for-service-stability: true` hiding failed task rollbacks.
+- **Shared Environment Secrets**: Reusing staging API secrets in production deployment jobs.
 
-## 🔍 Verification & Testing
+## Verification & Testing
 - **Deployment Status Check**: Verify GitHub Actions workflow run succeeds and ECS service stability check passes.

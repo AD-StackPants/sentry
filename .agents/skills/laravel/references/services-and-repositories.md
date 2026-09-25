@@ -1,9 +1,9 @@
-## 📌 Core Philosophy & Constraints
+## Core Philosophy & Constraints
 - **Service Layer Encapsulation**: Complex multi-step business transactions MUST be handled in Service classes inside `DB::transaction()`.
 - **Repository Interface Abstraction**: Decouple Eloquent persistence logic behind interface contracts when multiple storage adapters or caching are required.
 - **Strict Return Types**: Methods MUST declare explicit parameters and return type hints.
 
-## ⚡ Production Boilerplate / Standard Pattern
+## Production Boilerplate / Standard Pattern
 
 ```php
 <?php
@@ -41,10 +41,10 @@ final class OrderProcessingService
 }
 ```
 
-## 🚫 Forbidden Anti-Patterns
-- ❌ **DB Queries in Controllers or Views**: Executing `Order::where(...)` outside Service/Repository layers.
-- ❌ **Unprotected Multi-Table Mutations**: Updating multiple DB tables without wrapping operations in `DB::transaction()`.
-- ❌ **Hardcoded Class Dependencies**: Instantiating concrete repositories with `new OrderRepository()` instead of interface DI.
+## Forbidden Anti-Patterns
+- **DB Queries in Controllers or Views**: Executing `Order::where(...)` outside Service/Repository layers.
+- **Unprotected Multi-Table Mutations**: Updating multiple DB tables without wrapping operations in `DB::transaction()`.
+- **Hardcoded Class Dependencies**: Instantiating concrete repositories with `new OrderRepository()` instead of interface DI.
 
-## 🔍 Verification & Testing
+## Verification & Testing
 - **Pest Unit Test**: Mock `OrderRepositoryInterface` testing `OrderProcessingService` exception handling.

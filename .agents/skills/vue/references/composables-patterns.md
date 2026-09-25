@@ -1,22 +1,22 @@
-## 📌 Core Philosophy & Constraints
+## Core Philosophy & Constraints
 - **Naming & Scope**: Custom composables MUST be named `useXxx()` and reside in `src/composables/`.
 - **Flexible Arguments**: Accept refs/getters as inputs using `toValue()` / `unref()`.
 - **Automatic Cleanup**: Clean up event listeners, timers, or abort controllers in `onUnmounted()`.
 
-## ⚡ Production Boilerplate / Standard Pattern
+## Production Boilerplate / Standard Pattern
 
 ```typescript
 // src/composables/useFetch.ts
 import { ref, watchEffect, toValue, onUnmounted, type MaybeRefOrGetter } from 'vue';
 
 export function useFetch<T>(url: MaybeRefOrGetter<string>) {
-  const data = ref<T | null>(null);
-  const error = ref<Error | null>(null);
-  const isLoading = ref<boolean>(false);
+ const data = ref<T | null>(null);
+ const error = ref<Error | null>(null);
+ const isLoading = ref<boolean>(false);
 
-  let controller: AbortController | null = null;
+ let controller: AbortController | null = null;
 
-  watchEffect(async () => {
+ watchEffect(async () => {
     // Cancel previous in-flight request
     if (controller) controller.abort();
     controller = new AbortController();
@@ -37,20 +37,20 @@ export function useFetch<T>(url: MaybeRefOrGetter<string>) {
     } finally {
       isLoading.value = false;
     }
-  });
+ });
 
-  onUnmounted(() => {
+ onUnmounted(() => {
     if (controller) controller.abort();
-  });
+ });
 
-  return { data, error, isLoading };
+ return { data, error, isLoading };
 }
 ```
 
-## 🚫 Forbidden Anti-Patterns
-- ❌ **Global State Leak**: Declaring top-level `const state = ref()` outside the composables function unless explicit global singleton behavior is intended.
-- ❌ **Ignoring `toValue()`**: Accessing `url.value` directly without wrapping inputs in `toValue()`.
-- ❌ **Dangling Event Listeners**: Adding `window.addEventListener` without removing it in `onUnmounted()`.
+## Forbidden Anti-Patterns
+- **Global State Leak**: Declaring top-level `const state = ref()` outside the composables function unless explicit global singleton behavior is intended.
+- **Ignoring `toValue()`**: Accessing `url.value` directly without wrapping inputs in `toValue()`.
+- **Dangling Event Listeners**: Adding `window.addEventListener` without removing it in `onUnmounted()`.
 
-## 🔍 Verification & Testing
+## Verification & Testing
 - **Vitest Unit Test**: Mount composable via `withSetup()` helper asserting reactive state updates and unmount cleanup.

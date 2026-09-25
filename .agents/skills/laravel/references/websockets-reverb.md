@@ -1,9 +1,9 @@
-## 📌 Core Philosophy & Constraints
+## Core Philosophy & Constraints
 - **Laravel Reverb Server**: Use native Laravel Reverb for real-time WebSocket broadcasting.
 - **Private Channels**: Broadcast sensitive tenant updates via `PrivateChannel` authorization wrappers.
 - **ShouldBroadcastNow vs ShouldBroadcast**: Use `ShouldBroadcast` to push broadcast payloads through queues.
 
-## ⚡ Production Boilerplate / Standard Pattern
+## Production Boilerplate / Standard Pattern
 
 ```php
 <?php
@@ -50,10 +50,10 @@ final class OrderStatusUpdated implements ShouldBroadcast
 }
 ```
 
-## 🚫 Forbidden Anti-Patterns
-- ❌ **Public Broadcasting Sensitive Data**: Broadcasting user order details on unauthenticated public `Channel`.
-- ❌ **Overloading Payload Sizes**: Broadcasting entire bloated model objects with relations over WebSocket connections.
-- ❌ **Missing Channel Authorization**: Omitting channel authorization rules in `routes/channels.php`.
+## Forbidden Anti-Patterns
+- **Public Broadcasting Sensitive Data**: Broadcasting user order details on unauthenticated public `Channel`.
+- **Overloading Payload Sizes**: Broadcasting entire bloated model objects with relations over WebSocket connections.
+- **Missing Channel Authorization**: Omitting channel authorization rules in `routes/channels.php`.
 
-## 🔍 Verification & Testing
+## Verification & Testing
 - **Broadcasting Assertions**: Use `Event::fake()` in Pest verifying `OrderStatusUpdated` broadcasts on correct channel name.

@@ -1,9 +1,9 @@
-## 📌 Core Philosophy & Constraints
+## Core Philosophy & Constraints
 - **Form Request Rules**: All incoming request payloads MUST be validated via custom Form Request classes.
 - **Input Sanitization**: Trim and sanitize inputs automatically before validation evaluation.
 - **Custom Middleware**: Pipeline HTTP request processing using custom middleware for headers, correlation, and context.
 
-## ⚡ Production Boilerplate / Standard Pattern
+## Production Boilerplate / Standard Pattern
 
 ```php
 <?php
@@ -39,10 +39,10 @@ final class CreateOrderRequest extends FormRequest
 }
 ```
 
-## 🚫 Forbidden Anti-Patterns
-- ❌ **Inline Controller Validation**: Calling `$request->validate([...])` inside Controller methods.
-- ❌ **Unsanitized HTML Inputs**: Allowing raw HTML markup strings into text payload fields.
-- ❌ **Hardcoded `authorize() => true`**: Returning `true` blindly without checking user permissions.
+## Forbidden Anti-Patterns
+- **Inline Controller Validation**: Calling `$request->validate([...])` inside Controller methods.
+- **Unsanitized HTML Inputs**: Allowing raw HTML markup strings into text payload fields.
+- **Hardcoded `authorize() => true`**: Returning `true` blindly without checking user permissions.
 
-## 🔍 Verification & Testing
+## Verification & Testing
 - **Pest Validation Assertions**: Test invalid payloads asserting 422 Unprocessable Entity status and JSON validation errors.

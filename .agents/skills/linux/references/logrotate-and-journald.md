@@ -1,9 +1,9 @@
-## 📌 Core Philosophy & Constraints
+## Core Philosophy & Constraints
 - **Log Rotation Enforcement**: Configure `logrotate` for all custom application log paths to prevent disk capacity failure.
 - **Systemd Journal Cleanups**: Cap `journald` log retention size in `/etc/systemd/journald.conf` (`SystemMaxUse=1G`).
 - **Structured Journal Filtering**: Query system logs efficiently using `journalctl -u service-name -n 100 --no-pager`.
 
-## ⚡ Production Boilerplate / Standard Pattern
+## Production Boilerplate / Standard Pattern
 
 ```text
 # /etc/logrotate.d/fastapi-app
@@ -33,10 +33,10 @@ MaxRetentionSec=14day
 journalctl -u fastapi-backend.service --since "1 hour ago" -p err --no-pager
 ```
 
-## 🚫 Forbidden Anti-Patterns
-- ❌ **Un-rotated Application Logs**: Writing application logs directly to disk without configuring logrotate policies.
-- ❌ **Unbounded Journal Logs**: Leaving `SystemMaxUse` uncapped in `journald.conf` allowing `/var/log/journal` to fill disk.
-- ❌ **Uncompressed Log Archives**: Keeping multi-gigabyte raw text log files without gzip compression.
+## Forbidden Anti-Patterns
+- **Un-rotated Application Logs**: Writing application logs directly to disk without configuring logrotate policies.
+- **Unbounded Journal Logs**: Leaving `SystemMaxUse` uncapped in `journald.conf` allowing `/var/log/journal` to fill disk.
+- **Uncompressed Log Archives**: Keeping multi-gigabyte raw text log files without gzip compression.
 
-## 🔍 Verification & Testing
+## Verification & Testing
 - **Logrotate Dry-Run**: Execute `sudo logrotate --debug /etc/logrotate.d/fastapi-app` verifying zero syntax errors.

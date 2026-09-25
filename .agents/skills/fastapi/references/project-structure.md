@@ -1,9 +1,9 @@
-## 📌 Core Philosophy & Constraints
+## Core Philosophy & Constraints
 - **Domain-Driven Organization**: Group codebase by business feature (`auth/`, `users/`), not technical layer.
 - **Framework-Agnostic Core**: Business logic in `service.py` must remain completely decoupled from FastAPI HTTP routers.
 - **Explicit File Boundaries**: Each domain owns its models, schemas, routers, and services.
 
-## 📂 Standard Domain Directory Layout
+## Standard Domain Directory Layout
 
 ```text
 pyproject.toml
@@ -13,18 +13,18 @@ app/
 ├── config.py
 ├── database.py
 ├── auth/
-│   ├── __init__.py
-│   ├── router.py
-│   ├── schemas.py
-│   ├── models.py
-│   ├── service.py
-│   └── dependencies.py
+│ ├── __init__.py
+│ ├── router.py
+│ ├── schemas.py
+│ ├── models.py
+│ ├── service.py
+│ └── dependencies.py
 ├── users/
-│   ├── __init__.py
-│   ├── router.py
-│   ├── schemas.py
-│   ├── models.py
-│   └── service.py
+│ ├── __init__.py
+│ ├── router.py
+│ ├── schemas.py
+│ ├── models.py
+│ └── service.py
 └── shared/
     ├── __init__.py
     └── exceptions.py
@@ -34,7 +34,7 @@ tests/
     └── test_main.py
 ```
 
-## 🏛️ Layer Responsibilities
+## Layer Responsibilities
 
 | File / Component | Layer | Primary Responsibility |
 | :--- | :--- | :--- |
@@ -45,6 +45,9 @@ tests/
 | `dependencies.py` | Injection | Domain-specific FastAPI dependency injectors (`OAuth2PasswordBearer`, permissions). |
 | `shared/exceptions.py` | Common | Custom domain exceptions (`DomainException`, `EntityNotFoundException`). |
 
-## 🚫 Forbidden Anti-Patterns
-- ❌ **Technical Layer Grouping**: Creating global `controllers/`, `services/`, and `models/` dumping ground directories.
-- ❌ **Monolithic `utils.py`**: Placing un-categorized helper functions in a central `utils.py` file.
+## Forbidden Anti-Patterns
+- **Technical Layer Grouping**: Creating global `controllers/`, `services/`, and `models/` dumping ground directories.
+- **Monolithic `utils.py`**: Placing un-categorized helper functions in a central `utils.py` file.
+
+## Verification & Testing
+- **Import Boundary Linting**: Enforce clean layer separation using Ruff import rules ensuring routes import services, but services never import route objects.

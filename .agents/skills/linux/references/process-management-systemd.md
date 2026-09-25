@@ -1,9 +1,9 @@
-## 📌 Core Philosophy & Constraints
+## Core Philosophy & Constraints
 - **Systemd Unit Management**: Run application services via Systemd unit files (`/etc/systemd/system/app.service`).
 - **Auto-Restart Policies**: Configure `Restart=always` and `RestartSec=5s` for automatic recovery from process crashes.
 - **Environment File Injection**: Inject runtime configuration via `EnvironmentFile=/etc/default/app.env`.
 
-## ⚡ Production Boilerplate / Standard Pattern
+## Production Boilerplate / Standard Pattern
 
 ```ini
 # /etc/systemd/system/fastapi-backend.service
@@ -34,10 +34,10 @@ sudo systemctl enable --now fastapi-backend
 sudo systemctl status fastapi-backend
 ```
 
-## 🚫 Forbidden Anti-Patterns
-- ❌ **Un-managed Background Processes**: Running processes in background terminals using `nohup python app.py &` or `screen`.
-- ❌ **Running Systemd Services as Root**: Omitting `User=www-data` running services with elevated root access.
-- ❌ **Hardcoded Environment Secrets in Unit Files**: Embedding plain-text passwords directly in `.service` files.
+## Forbidden Anti-Patterns
+- **Un-managed Background Processes**: Running processes in background terminals using `nohup python app.py &` or `screen`.
+- **Running Systemd Services as Root**: Omitting `User=www-data` running services with elevated root access.
+- **Hardcoded Environment Secrets in Unit Files**: Embedding plain-text passwords directly in `.service` files.
 
-## 🔍 Verification & Testing
+## Verification & Testing
 - **Status Assertion**: Execute `systemctl status fastapi-backend` verifying output displays `active (running)`.

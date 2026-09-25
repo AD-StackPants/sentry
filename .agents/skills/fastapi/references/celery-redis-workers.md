@@ -1,9 +1,9 @@
-## 📌 Core Philosophy & Constraints
+## Core Philosophy & Constraints
 - **Celery Worker Offloading**: Use Celery backed by Redis broker for heavy, asynchronous distributed task queues.
 - **Task Retry Policy**: Configure `autoretry_for`, `retry_backoff`, and `max_retries` on Celery tasks.
 - **Separation of Concerns**: Keep Celery worker task logic in `app/workers/` separate from FastAPI HTTP endpoints.
 
-## ⚡ Production Boilerplate / Standard Pattern
+## Production Boilerplate / Standard Pattern
 
 ```python
 # app/workers/celery_app.py
@@ -24,6 +24,10 @@ celery_app.conf.update(
 )
 
 # app/workers/tasks.py
+import structlog
+
+logger = structlog.get_logger()
+
 @celery_app.task(
     bind=True,
     autoretry_for=(Exception,),
@@ -32,14 +36,14 @@ celery_app.conf.update(
     max_retries=5
 )
 def generate_pdf_report(self, tenant_id: str, report_id: str):
-    print(f"Generating PDF report {report_id} for tenant {tenant_id}")
+    logger.info("Generating PDF report", extra={"tenant_id": tenant_id, "report_id": report_id})
     return {"status": "completed", "report_id": report_id}
 ```
 
-## 🚫 Forbidden Anti-Patterns
-- ❌ **Passing Un-serializable Objects to Celery**: Passing SQLAlchemy ORM model instances directly to `.delay(model)` instead of ID strings.
-- ❌ **Infinite Task Retries**: Omitting `max_retries` on Celery task definitions causing worker retry loops.
-- ❌ **Synchronous Queue Blocking in FastAPI**: Invoking task with `.get()` synchronously in FastAPI routes waiting for completion.
+## Forbidden Anti-Patterns
+- **Passing Un-serializable Objects to Celery**: Passing SQLAlchemy ORM model instances directly to `.delay(model)` instead of ID strings.
+- **Infinite Task Retries**: Omitting `max_retries` on Celery task definitions causing worker retry loops.
+- **Synchronous Queue Blocking in FastAPI**: Invoking task with `.get()` synchronously in FastAPI routes waiting for completion.
 
-## 🔍 Verification & Testing
+## Verification & Testing
 - **Celery Eager Testing Mode**: Set `CELERY_TASK_ALWAYS_EAGER = True` in Pytest suite to execute Celery tasks synchronously during test runs.

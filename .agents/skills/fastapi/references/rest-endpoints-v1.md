@@ -1,9 +1,9 @@
-## 📌 Core Philosophy & Constraints
+## Core Philosophy & Constraints
 - **APIRouter Modularization**: Organize endpoints inside modular `APIRouter` instances grouped by domain feature.
 - **Thin Routers**: Routers MUST only parse inputs, validate schemas, delegate to Service classes, and return response models.
 - **Strict Response Models**: Specify `response_model=...` and `status_code=...` on every router decorator.
 
-## ⚡ Production Boilerplate / Standard Pattern
+## Production Boilerplate / Standard Pattern
 
 ```python
 from fastapi import APIRouter, Depends, status, HTTPException
@@ -33,10 +33,10 @@ async def create_order(
     return order
 ```
 
-## 🚫 Forbidden Anti-Patterns
-- ❌ **Raw DB Queries in Routers**: Executing `await session.execute(select(...))` directly inside router functions.
-- ❌ **Missing Response Model Typing**: Omitted `response_model` decorators causing internal schema data leaks.
-- ❌ **Monolithic Router Files**: Putting 2,000 lines of disparate API routes inside a single `main.py` router file.
+## Forbidden Anti-Patterns
+- **Raw DB Queries in Routers**: Executing `await session.execute(select(...))` directly inside router functions.
+- **Missing Response Model Typing**: Omitted `response_model` decorators causing internal schema data leaks.
+- **Monolithic Router Files**: Putting 2,000 lines of disparate API routes inside a single `main.py` router file.
 
-## 🔍 Verification & Testing
+## Verification & Testing
 - **AsyncClient API Test**: Test endpoint with `httpx.AsyncClient` in Pytest asserting HTTP status 201 and validated JSON keys.

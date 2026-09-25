@@ -1,9 +1,9 @@
-## 📌 Core Philosophy & Constraints
+## Core Philosophy & Constraints
 - **Lightweight Async Jobs**: Use FastAPI `BackgroundTasks` for non-critical, in-process tasks (email confirmation, log flushing).
 - **Non-Blocking Return**: Immediately return HTTP status code 202/200 to client without waiting for task execution completion.
 - **Exception Isolation**: Enclose background task logic in try/except blocks to prevent unhandled background crashes.
 
-## ⚡ Production Boilerplate / Standard Pattern
+## Production Boilerplate / Standard Pattern
 
 ```python
 from fastapi import APIRouter, BackgroundTasks, status
@@ -31,10 +31,10 @@ async def register_user(
     return {"message": "Registration received, confirmation email pending."}
 ```
 
-## 🚫 Forbidden Anti-Patterns
-- ❌ **Heavy Computation in BackgroundTasks**: Offloading 10-minute CPU processing jobs to `BackgroundTasks` instead of Celery.
-- ❌ **Awaiting Tasks Inside Endpoint**: Calling `await send_welcome_email_task()` inside route handler function body.
-- ❌ **Ignoring Error Catching in Tasks**: Failing to catch exceptions in background tasks causing unlogged silent failures.
+## Forbidden Anti-Patterns
+- **Heavy Computation in BackgroundTasks**: Offloading 10-minute CPU processing jobs to `BackgroundTasks` instead of Celery.
+- **Awaiting Tasks Inside Endpoint**: Calling `await send_welcome_email_task()` inside route handler function body.
+- **Ignoring Error Catching in Tasks**: Failing to catch exceptions in background tasks causing unlogged silent failures.
 
-## 🔍 Verification & Testing
+## Verification & Testing
 - **Pytest Background Task Execution**: Test endpoint in Pytest verifying task function added to `background_tasks.tasks`.

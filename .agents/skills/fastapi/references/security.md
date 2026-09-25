@@ -1,9 +1,9 @@
-## 📌 Core Philosophy & Constraints
+## Core Philosophy & Constraints
 - **Security Headers Middleware**: Inject `X-Frame-Options`, `X-Content-Type-Options`, and `Content-Security-Policy` via Starlette middleware.
 - **Strict CORS Origin Whitelisting**: Specify exact allowed origins in `CORSMiddleware`.
 - **SQLAlchemy Parameterization**: Utilize SQLAlchemy 2.0 statement builders exclusively to prevent SQL injection.
 
-## ⚡ Production Boilerplate / Standard Pattern
+## Production Boilerplate / Standard Pattern
 
 ```python
 from fastapi import FastAPI
@@ -32,10 +32,10 @@ def setup_security(app: FastAPI):
     )
 ```
 
-## 🚫 Forbidden Anti-Patterns
-- ❌ **Wildcard CORS with Credentials**: Setting `allow_origins=["*"]` when `allow_credentials=True`.
-- ❌ **Raw String Query Building**: Formatting SQL queries using f-strings (`f"SELECT * FROM users WHERE email='{email}'"`).
-- ❌ **Exposing Debug Interactive Docs in Production**: Leaving `/docs` and `/redoc` enabled publicly in production environments.
+## Forbidden Anti-Patterns
+- **Wildcard CORS with Credentials**: Setting `allow_origins=["*"]` when `allow_credentials=True`.
+- **Raw String Query Building**: Formatting SQL queries using f-strings (`f"SELECT * FROM users WHERE email='{email}'"`).
+- **Exposing Debug Interactive Docs in Production**: Leaving `/docs` and `/redoc` enabled publicly in production environments.
 
-## 🔍 Verification & Testing
+## Verification & Testing
 - **Header Inspection Test**: Send test request using `httpx.AsyncClient` asserting all security headers are present in response headers.

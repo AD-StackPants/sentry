@@ -1,6 +1,7 @@
 ---
 name: linux
-description: "Linux system administration, server hardening, Systemd process management, storage permissions, and shell automation."
+description: >-
+ Use this skill whenever administering Linux servers, configuring Systemd service units, inspecting processes (ps, htop, ss), hardening server security (UFW, SSH, permissions), writing robust Bash scripts (set -euo pipefail), or setting up logrotate and journald.
 ---
 
 
@@ -10,16 +11,16 @@ This document serves as the decision matrix and tool reference for AI agents per
 
 ---
 
-## 🔗 Sub-Skill Deep Dive References
-- 🛡️ **Server Hardening & Security**: [server-hardening-security.md](./references/server-hardening-security.md)
-- ⚙️ **Process Management & Systemd**: [process-management-systemd.md](./references/process-management-systemd.md)
-- 🔒 **Storage & Permissions**: [storage-and-permissions.md](./references/storage-and-permissions.md)
-- 📜 **Logrotate & Journald**: [logrotate-and-journald.md](./references/logrotate-and-journald.md)
-- 🤖 **Shell Script Automation**: [shell-scripting-automation.md](./references/shell-scripting-automation.md)
+## Sub-Skill Deep Dive References
+- **Server Hardening & Security**: [server-hardening-security.md](./references/server-hardening-security.md)
+- **Process Management & Systemd**: [process-management-systemd.md](./references/process-management-systemd.md)
+- **Storage & Permissions**: [storage-and-permissions.md](./references/storage-and-permissions.md)
+- **Logrotate & Journald**: [logrotate-and-journald.md](./references/logrotate-and-journald.md)
+- **Shell Script Automation**: [shell-scripting-automation.md](./references/shell-scripting-automation.md)
 
 ---
 
-## 🧭 1. Linux Operations Matrix
+## 1. Linux Operations Matrix
 
 | Task / Domain | Primary Tool / Command | Context / Usage Rule |
 | :--- | :--- | :--- |
@@ -35,21 +36,21 @@ This document serves as the decision matrix and tool reference for AI agents per
 
 ---
 
-## 🛠️ 2. Linux CRUD Command Cheat Sheet
+## 2. Linux CRUD Command Cheat Sheet
 
-### 📁 Files & Directories
+### Files & Directories
 - **Create:** `touch file.txt`, `mkdir -p /path/to/dir`
 - **Read:** `cat file.txt`, `less file.txt`, `tail -f /var/log/syslog`
 - **Update:** `sed -i 's/key=old/key=new/g' config.env`, `echo "KEY=VAL" >> config.env`
 - **Delete:** `rm file.txt`, `rm -rf /path/to/dir` (Verify path with `pwd` first!)
 
-### ⚙️ Systemd Services
+### Systemd Services
 - **Status:** `systemctl status service_name`
 - **Logs:** `journalctl -u service_name -n 100 -f`
 - **Restart / Reload:** `sudo systemctl restart service_name` or `sudo systemctl daemon-reload`
 - **Enable on Boot:** `sudo systemctl enable service_name`
 
-### 🔑 Permissions & Security
+### Permissions & Security
 - **Secure File (.env / Private Keys):** `chmod 600 /path/to/.env`
 - **Set Ownership:** `chown -R appuser:appgroup /var/www/app`
 - **Check Open Ports:** `ss -tulpn`
@@ -57,8 +58,8 @@ This document serves as the decision matrix and tool reference for AI agents per
 
 ---
 
-## 🚫 Forbidden Anti-Patterns
-- ❌ **NO `chmod 777`:** Never grant full read/write/execute permissions to all users.
-- ❌ **NO Root SSH / Password Auth:** Always require SSH keys (`PermitRootLogin no`, `PasswordAuthentication no`).
-- ❌ **NO Hardcoded Secrets in Unit Files:** Load credentials using `EnvironmentFile=/path/to/.env` in systemd.
-- ❌ **NO Unbounded Logs:** Always configure `logrotate` or journal limits for custom service logging.
+## Forbidden Anti-Patterns
+- **NO `chmod 777`:** Never grant full read/write/execute permissions to all users.
+- **NO Root SSH / Password Auth:** Always require SSH keys (`PermitRootLogin no`, `PasswordAuthentication no`).
+- **NO Hardcoded Secrets in Unit Files:** Load credentials using `EnvironmentFile=/path/to/.env` in systemd.
+- **NO Unbounded Logs:** Always configure `logrotate` or journal limits for custom service logging.

@@ -1,9 +1,9 @@
-## 📌 Core Philosophy & Constraints
+## Core Philosophy & Constraints
 - **Strict Permission Masking**: Set directory permissions to `750` (`rwxr-x---`) and file permissions to `640` (`rw-r-----`).
 - **Least Privilege Ownership**: Assign ownership strictly to service users (`www-data:www-data`), never global `root`.
 - **Disk Space Analysis**: Monitor filesystem usage using `df -h` and `du -sh *` to prevent out-of-space crashes.
 
-## ⚡ Production Boilerplate / Standard Pattern
+## Production Boilerplate / Standard Pattern
 
 ```bash
 # Set secure application file ownership and permission boundaries
@@ -23,10 +23,10 @@ df -hT /var
 du -sh /var/log/* | sort -hr | head -n 10
 ```
 
-## 🚫 Forbidden Anti-Patterns
-- ❌ **Permissive Permission Masks**: Executing `chmod -R 777 /var/www` granting world-writable permissions to all local processes.
-- ❌ **Root File Ownership**: Leaving application uploads owned by `root:root` preventing service user access.
-- ❌ **Ignoring Full Filesystems**: Allowing log or tmp directories to reach 100% capacity causing service failure.
+## Forbidden Anti-Patterns
+- **Permissive Permission Masks**: Executing `chmod -R 777 /var/www` granting world-writable permissions to all local processes.
+- **Root File Ownership**: Leaving application uploads owned by `root:root` preventing service user access.
+- **Ignoring Full Filesystems**: Allowing log or tmp directories to reach 100% capacity causing service failure.
 
-## 🔍 Verification & Testing
+## Verification & Testing
 - **Permission Verification**: Execute `ls -ld /var/www/app` verifying permissions output `drwxr-x--- www-data www-data`.

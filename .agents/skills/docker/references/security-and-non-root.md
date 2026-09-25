@@ -1,9 +1,9 @@
-## 📌 Core Philosophy & Constraints
+## Core Philosophy & Constraints
 - **Unprivileged User Execution**: Never run application processes as `root`; create a dedicated unprivileged user (`appuser`).
 - **Secret Protection**: Pass runtime secrets via environment variables or secret mounts; never embed secrets in Docker images.
 - **Vulnerability Scanning**: Scan production images with Trivy or Docker Scout in CI pipelines.
 
-## ⚡ Production Boilerplate / Standard Pattern
+## Production Boilerplate / Standard Pattern
 
 ```dockerfile
 FROM python:3.12-slim
@@ -27,10 +27,10 @@ CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
 trivy image --severity HIGH,CRITICAL my-app:latest
 ```
 
-## 🚫 Forbidden Anti-Patterns
-- ❌ **Running as Root**: Omitting `USER appuser` instruction leaving container execution vulnerable to privilege escalation.
-- ❌ **Hardcoded Environment Credentials**: Storing API keys or passwords inside `ENV` instructions in Dockerfiles.
-- ❌ **Ignoring High/Critical CVEs**: Deploying production images with known unpatched security vulnerabilities.
+## Forbidden Anti-Patterns
+- **Running as Root**: Omitting `USER appuser` instruction leaving container execution vulnerable to privilege escalation.
+- **Hardcoded Environment Credentials**: Storing API keys or passwords inside `ENV` instructions in Dockerfiles.
+- **Ignoring High/Critical CVEs**: Deploying production images with known unpatched security vulnerabilities.
 
-## 🔍 Verification & Testing
+## Verification & Testing
 - **Non-Root Check**: `docker run --rm my-app:latest whoami` asserting output returns `appuser` (not `root`).

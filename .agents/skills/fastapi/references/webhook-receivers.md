@@ -1,9 +1,9 @@
-## 📌 Core Philosophy & Constraints
+## Core Philosophy & Constraints
 - **HMAC Signature Verification**: Always verify incoming webhook cryptographic signatures (`X-Signature`) using HMAC-SHA256.
 - **Idempotent Payload Processing**: Store processed webhook message IDs in Redis/DB to prevent duplicate event execution.
 - **Immediate ACK**: Return HTTP 200 OK immediately and process payload asynchronously via background tasks or Celery.
 
-## ⚡ Production Boilerplate / Standard Pattern
+## Production Boilerplate / Standard Pattern
 
 ```python
 import hmac
@@ -36,10 +36,10 @@ async def receive_stripe_webhook(
     return {"received": True, "event_id": event_id}
 ```
 
-## 🚫 Forbidden Anti-Patterns
-- ❌ **Unverified Webhooks**: Executing actions on webhook requests without signature verification.
-- ❌ **Synchronous Webhook Execution**: Running heavy DB mutations directly inside the webhook HTTP response lifecycle.
-- ❌ **Insecure Signature Comparison**: Using `==` string equality instead of `hmac.compare_digest()` exposing timing attacks.
+## Forbidden Anti-Patterns
+- **Unverified Webhooks**: Executing actions on webhook requests without signature verification.
+- **Synchronous Webhook Execution**: Running heavy DB mutations directly inside the webhook HTTP response lifecycle.
+- **Insecure Signature Comparison**: Using `==` string equality instead of `hmac.compare_digest()` exposing timing attacks.
 
-## 🔍 Verification & Testing
+## Verification & Testing
 - **HMAC Test Suite**: Generate valid HMAC signature in Pytest test and assert endpoint returns HTTP 200 OK.

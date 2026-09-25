@@ -1,9 +1,9 @@
-## 📌 Core Philosophy & Constraints
+## Core Philosophy & Constraints
 - **Generic Pagination Container**: Wrap paginated lists in a generic `PageResponse[T]` schema.
 - **Allowed Query Sorting**: Whitelist sortable database columns to prevent SQL injection or un-indexed queries.
 - **SQLAlchemy 2.0 Async Limit/Offset**: Execute `select().offset().limit()` or cursor filters asynchronously.
 
-## ⚡ Production Boilerplate / Standard Pattern
+## Production Boilerplate / Standard Pattern
 
 ```python
 from typing import Generic, TypeVar
@@ -51,10 +51,10 @@ async def list_orders(
     )
 ```
 
-## 🚫 Forbidden Anti-Patterns
-- ❌ **Unbounded Queries**: Executing `await db.execute(select(Order))` without `.limit()` clause.
-- ❌ **Unsanitized Column Strings in `order_by`**: Passing arbitrary user string inputs into `order_by(text(sort_by))`.
-- ❌ **Unbound Page Sizes**: Allowing client query parameters like `?size=1000000`.
+## Forbidden Anti-Patterns
+- **Unbounded Queries**: Executing `await db.execute(select(Order))` without `.limit()` clause.
+- **Unsanitized Column Strings in `order_by`**: Passing arbitrary user string inputs into `order_by(text(sort_by))`.
+- **Unbound Page Sizes**: Allowing client query parameters like `?size=1000000`.
 
-## 🔍 Verification & Testing
+## Verification & Testing
 - **Pytest Pagination Limits**: Send `?size=5` in test request asserting length of `items` array is <= 5.

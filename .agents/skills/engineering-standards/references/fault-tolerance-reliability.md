@@ -1,9 +1,9 @@
-## 📌 Core Philosophy & Constraints
+## Core Philosophy & Constraints
 - **Strict Timeouts**: Every outbound HTTP request or RPC call MUST enforce a explicit timeout (< 5s).
 - **Exponential Backoff with Jitter**: Retries on transient 5xx errors MUST use exponential backoff and randomized jitter to prevent thundering herd.
 - **Circuit Breaker Protection**: Calls to third-party services MUST open circuit breakers after repeated consecutive failures.
 
-## ⚡ Production Boilerplate / Standard Pattern
+## Production Boilerplate / Standard Pattern
 
 ### Python Resilient Outbound HTTP Client Pattern (HTTPX + Tenacity)
 ```python
@@ -27,11 +27,11 @@ class ResilientApiClient:
         return response.json()
 ```
 
-## 🚫 Forbidden Anti-Patterns
-- ❌ **Infinite Retries**: Retrying requests infinitely without max attempt cutoffs.
-- ❌ **Missing Timeouts**: Invoking external APIs without timeout parameters causing thread pool exhaustion.
-- ❌ **Fixed Delay Retries**: Retrying requests every 1 second without exponential backoff or jitter.
+## Forbidden Anti-Patterns
+- **Infinite Retries**: Retrying requests infinitely without max attempt cutoffs.
+- **Missing Timeouts**: Invoking external APIs without timeout parameters causing thread pool exhaustion.
+- **Fixed Delay Retries**: Retrying requests every 1 second without exponential backoff or jitter.
 
-## 🔍 Verification & Testing
+## Verification & Testing
 - **Timeout Assertion Test**: Mock slow external endpoint (10s delay) and assert client throws timeout exception at 5 seconds.
 - **Retry Count Test**: Mock 503 response and verify exact 3 retry attempts before raising exception.

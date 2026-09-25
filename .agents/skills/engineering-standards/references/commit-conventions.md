@@ -1,16 +1,16 @@
-## 📌 Core Philosophy & Constraints
+## Core Philosophy & Constraints
 - **Conventional Commits 1.0.0**: Mandatory adherence to standard format: `<type>(<scope>): <subject>`.
 - **Imperative Mood**: Subjects MUST be written in imperative mood ("add", "fix", "change", not "added" or "adds").
 - **Breaking Changes**: MUST include `!` before colon or `BREAKING CHANGE:` header in footer.
 - **Allowed Types**: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`.
 
-## ⚡ Production Boilerplate / Standard Pattern
+## Production Boilerplate / Standard Pattern
 
 ### Commitlint Configuration (`commitlint.config.js`)
 ```javascript
 module.exports = {
-  extends: ['@commitlint/config-conventional'],
-  rules: {
+ extends: ['@commitlint/config-conventional'],
+ rules: {
     'type-enum': [
       2,
       'always',
@@ -20,7 +20,7 @@ module.exports = {
     'subject-full-stop': [2, 'never', '.'],
     'type-empty': [2, 'never'],
     'scope-empty': [2, 'never']
-  }
+ }
 };
 ```
 
@@ -32,12 +32,12 @@ refactor(laravel): extract payment processing logic to Action service
 feat(api)!: migrate v1 user endpoints to v2 schema format
 ```
 
-## 🚫 Forbidden Anti-Patterns
-- ❌ **Vague Subjects**: Commits like `fix stuff`, `wip`, `update code`, or `minor changes`.
-- ❌ **Missing Scopes**: Omitting component or module context (e.g. `feat: add user login`).
-- ❌ **Past Tense Verbs**: Using `added`, `fixed`, `refactored` instead of `add`, `fix`, `refactor`.
-- ❌ **Combining Unrelated Changes**: Multi-concern commits mixing refactoring with new feature logic.
+## Forbidden Anti-Patterns
+- **Vague Subjects**: Commits like `fix stuff`, `wip`, `update code`, or `minor changes`.
+- **Missing Scopes**: Omitting component or module context (e.g. `feat: add user login`).
+- **Past Tense Verbs**: Using `added`, `fixed`, `refactored` instead of `add`, `fix`, `refactor`.
+- **Combining Unrelated Changes**: Multi-concern commits mixing refactoring with new feature logic.
 
-## 🔍 Verification & Testing
+## Verification & Testing
 - **Local Test**: Run `npx commitlint --from=HEAD~1` to validate commit messages.
 - **Git Hook**: Enforce via Husky `commit-msg` hook asserting Conventional Commits specification.

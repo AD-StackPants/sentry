@@ -1,6 +1,7 @@
 ---
 name: cicd
-description: "GitHub Actions automated pipelines, Docker build & push workflows, release management, secrets, and zero-downtime deployments."
+description: >-
+ Use this skill whenever creating, modifying, or debugging GitHub Actions automated pipelines (.github/workflows/), matrix testing workflows, Docker buildx caching, AWS OIDC credential authentication, Secrets Manager integration, or zero-downtime blue/green deployment workflows.
 ---
 
 
@@ -10,7 +11,7 @@ This document serves as the automation decision matrix and GitHub Actions workfl
 
 ---
 
-## 🛠️ Tech Stack & GitHub Actions Manifest
+## Tech Stack & GitHub Actions Manifest
 
 - **Pipeline Engine**: GitHub Actions Workflows (`.github/workflows/*.yml`)
 - **Checkout Action**: `actions/checkout@v4`
@@ -21,17 +22,17 @@ This document serves as the automation decision matrix and GitHub Actions workfl
 
 ---
 
-## 🔗 Sub-Skill Deep Dive References
+## Sub-Skill Deep Dive References
 
-- 🧪 **Automated Testing Pipeline**: [automated-testing-pipeline.md](./references/automated-testing-pipeline.md)
-- 🐳 **Docker Build & Push**: [docker-build-and-push.md](./references/docker-build-and-push.md)
-- 🚀 **Deployment Workflows**: [deployment-workflows.md](./references/deployment-workflows.md)
-- 🔑 **Environment Secrets**: [environment-secrets.md](./references/environment-secrets.md)
-- 🔄 **Zero-Downtime Deployments**: [zero-downtime-deployments.md](./references/zero-downtime-deployments.md)
+- **Automated Testing Pipeline**: [automated-testing-pipeline.md](./references/automated-testing-pipeline.md)
+- **Docker Build & Push**: [docker-build-and-push.md](./references/docker-build-and-push.md)
+- **Deployment Workflows**: [deployment-workflows.md](./references/deployment-workflows.md)
+- **Environment Secrets**: [environment-secrets.md](./references/environment-secrets.md)
+- **Zero-Downtime Deployments**: [zero-downtime-deployments.md](./references/zero-downtime-deployments.md)
 
 ---
 
-## 🧭 1. CI/CD Decision Matrix
+## 1. CI/CD Decision Matrix
 
 | Pipeline Phase | Recommended Tool / Action | Architectural Rule |
 | :--- | :--- | :--- |
@@ -43,19 +44,19 @@ This document serves as the automation decision matrix and GitHub Actions workfl
 
 ---
 
-## 🛠️ 2. Production GitHub Actions Standard Pattern
+## 2. Production GitHub Actions Standard Pattern
 
 ```yaml
 name: Automated Testing Pipeline
 
 on:
-  push:
+ push:
     branches: [main, staging]
-  pull_request:
+ pull_request:
     branches: [main, staging]
 
 jobs:
-  python-test-matrix:
+ python-test-matrix:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -90,16 +91,16 @@ jobs:
 
 ---
 
-## 🚫 Forbidden Anti-Patterns
+## Forbidden Anti-Patterns
 
-- ❌ **Hardcoded Secrets**: Inlining passwords, private keys, or API tokens inside `.github/workflows/` files.
-- ❌ **Uncached Pipeline Runs**: Re-downloading npm packages or Python wheels on every commit without cache actions.
-- ❌ **Static AWS Credentials**: Using long-lived `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` secrets instead of OIDC.
-- ❌ **Direct Main Branch Merges**: Merging pull requests without requiring green automated test workflow passes.
+- **Hardcoded Secrets**: Inlining passwords, private keys, or API tokens inside `.github/workflows/` files.
+- **Uncached Pipeline Runs**: Re-downloading npm packages or Python wheels on every commit without cache actions.
+- **Static AWS Credentials**: Using long-lived `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY` secrets instead of OIDC.
+- **Direct Main Branch Merges**: Merging pull requests without requiring green automated test workflow passes.
 
 ---
 
-## 🔍 Verification & Quality Assurance
+## Verification & Quality Assurance
 
 - **Workflow Syntax Check**: Validate GitHub Actions YAML structure using `actionlint`.
 - **Pipeline Status Check**: Verify workflow execution passes 100% cleanly in GitHub Actions UI.

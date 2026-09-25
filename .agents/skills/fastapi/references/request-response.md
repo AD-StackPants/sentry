@@ -1,9 +1,9 @@
-## 📌 Core Philosophy & Constraints
+## Core Philosophy & Constraints
 - **Pydantic Response Filtering**: Filter database attributes automatically using `response_model=OutputSchema`.
 - **Strict Input Models**: Separate create/update request schemas from output response schemas.
 - **Custom Encoders**: Use Pydantic `@field_serializer` for ISO-8601 datetimes and UUID string conversions.
 
-## ⚡ Production Boilerplate / Standard Pattern
+## Production Boilerplate / Standard Pattern
 
 ```python
 from datetime import datetime
@@ -33,10 +33,10 @@ class UserResponseSchema(BaseModel):
         return str(uid)
 ```
 
-## 🚫 Forbidden Anti-Patterns
-- ❌ **Returning SQLAlchemy Models Directly**: Returning raw ORM model instances without `response_model` filtering.
-- ❌ **Reusing Create Schemas for Output**: Using input schemas that accept `password` fields to format HTTP response outputs.
-- ❌ **Manual Dictionary Building**: Returning untyped Python dicts (`return {"id": user.id, "email": user.email}`) in router functions.
+## Forbidden Anti-Patterns
+- **Returning SQLAlchemy Models Directly**: Returning raw ORM model instances without `response_model` filtering.
+- **Reusing Create Schemas for Output**: Using input schemas that accept `password` fields to format HTTP response outputs.
+- **Manual Dictionary Building**: Returning untyped Python dicts (`return {"id": user.id, "email": user.email}`) in router functions.
 
-## 🔍 Verification & Testing
+## Verification & Testing
 - **Pytest Response Filter Test**: Test router response asserting `password` field is excluded from output JSON dictionary.

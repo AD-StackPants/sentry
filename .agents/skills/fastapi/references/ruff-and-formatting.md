@@ -1,9 +1,9 @@
-## 📌 Core Philosophy & Constraints
+## Core Philosophy & Constraints
 - **Ruff Linter & Formatter**: Standardize code formatting and linting on Ruff (`ruff check`, `ruff format`).
 - **Strict Rule Selection**: Enable Pyflakes (`F`), pycodestyle (`E`, `W`), isort (`I`), and flake8-bugbear (`B`).
 - **Line Length**: Enforce strict line length limits (e.g., 100-120 chars max).
 
-## ⚡ Production Boilerplate / Standard Pattern
+## Production Boilerplate / Standard Pattern
 
 ```toml
 # pyproject.toml
@@ -27,10 +27,10 @@ combine-as-imports = true
 known-first-party = ["app"]
 ```
 
-## 🚫 Forbidden Anti-Patterns
-- ❌ **Multiple Formatting Tools**: Mixing Black, Flake8, and Isort together when Ruff replaces all three.
-- ❌ **Ignoring Import Order**: Writing un-sorted or circular imports at top level of Python modules.
-- ❌ **Disabling Rules Globally**: Silencing lint rules globally (`ignore = ["ALL"]`) instead of fixing issues.
+## Forbidden Anti-Patterns
+- **Multiple Formatting Tools**: Mixing Black, Flake8, and Isort together when Ruff replaces all three.
+- **Ignoring Import Order**: Writing un-sorted or circular imports at top level of Python modules.
+- **Disabling Rules Globally**: Silencing lint rules globally (`ignore = ["ALL"]`) instead of fixing issues.
 
-## 🔍 Verification & Testing
+## Verification & Testing
 - **Execution Command**: `ruff check .` and `ruff format --check .` asserting clean output in CI.

@@ -1,9 +1,9 @@
-## 📌 Core Philosophy & Constraints
+## Core Philosophy & Constraints
 - **Security Headers**: Inject `X-Frame-Options`, `X-Content-Type-Options`, and `Strict-Transport-Security` headers in middleware.
 - **SQL Injection Prevention**: Always use Eloquent query builder or PDO parameterized bindings. Never concatenate SQL strings.
 - **Strict CORS**: Configure `config/cors.php` explicitly.
 
-## ⚡ Production Boilerplate / Standard Pattern
+## Production Boilerplate / Standard Pattern
 
 ```php
 <?php
@@ -33,10 +33,10 @@ final class SecurityHeadersMiddleware
 }
 ```
 
-## 🚫 Forbidden Anti-Patterns
-- ❌ **Raw DB SQL Concatenation**: Executing `DB::select("SELECT * FROM users WHERE email = '$email'")`.
-- ❌ **Disabling CSRF Middleware Broadly**: Excluding entire domain paths from CSRF protection without justification.
-- ❌ **Exposing Debug Traces**: Setting `APP_DEBUG=true` in production environment configuration.
+## Forbidden Anti-Patterns
+- **Raw DB SQL Concatenation**: Executing `DB::select("SELECT * FROM users WHERE email = '$email'")`.
+- **Disabling CSRF Middleware Broadly**: Excluding entire domain paths from CSRF protection without justification.
+- **Exposing Debug Traces**: Setting `APP_DEBUG=true` in production environment configuration.
 
-## 🔍 Verification & Testing
+## Verification & Testing
 - **Pest Header Test**: Execute API call in Pest test asserting `X-Content-Type-Options: nosniff` header is present.

@@ -1,9 +1,9 @@
-## 📌 Core Philosophy & Constraints
+## Core Philosophy & Constraints
 - **ShouldQueue Interface**: Offload heavy or external operations (email, webhooks, processing) to queued jobs (`ShouldQueue`).
 - **Redis Queue Driver**: Standardize background worker queue connections on Redis.
 - **Explicit Backoff & Max Tries**: Always specify `$tries`, `$backoff`, and `$timeout` on Job classes.
 
-## ⚡ Production Boilerplate / Standard Pattern
+## Production Boilerplate / Standard Pattern
 
 ```php
 <?php
@@ -49,10 +49,10 @@ final class ProcessPaymentJob implements ShouldQueue
 }
 ```
 
-## 🚫 Forbidden Anti-Patterns
-- ❌ **Synchronous Heavy External Calls**: Calling slow payment gateways directly inside HTTP request controllers.
-- ❌ **Missing Retries / Backoff**: Creating queued jobs without configuring `$tries` or `$backoff` rules.
-- ❌ **Passing Huge In-Memory Models**: Passing large un-serialized objects instead of using `SerializesModels` with Model references.
+## Forbidden Anti-Patterns
+- **Synchronous Heavy External Calls**: Calling slow payment gateways directly inside HTTP request controllers.
+- **Missing Retries / Backoff**: Creating queued jobs without configuring `$tries` or `$backoff` rules.
+- **Passing Huge In-Memory Models**: Passing large un-serialized objects instead of using `SerializesModels` with Model references.
 
-## 🔍 Verification & Testing
+## Verification & Testing
 - **Pest Queue Fake**: Use `Queue::fake()` in Pest tests asserting `ProcessPaymentJob::dispatch()` was called.

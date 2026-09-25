@@ -1,9 +1,9 @@
-## 📌 Core Philosophy & Constraints
+## Core Philosophy & Constraints
 - **ConnectionManager Class**: Encapsulate active WebSocket connections and broadcasting logic inside a thread-safe ConnectionManager.
 - **Async Iteration**: Handle incoming WebSocket messages asynchronously using `await websocket.receive_text()`.
 - **Disconnect Cleanup**: Always remove closed connections from active connections set inside `try/finally` or `WebSocketDisconnect`.
 
-## ⚡ Production Boilerplate / Standard Pattern
+## Production Boilerplate / Standard Pattern
 
 ```python
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
@@ -38,10 +38,10 @@ async def websocket_endpoint(websocket: WebSocket):
         manager.disconnect(websocket)
 ```
 
-## 🚫 Forbidden Anti-Patterns
-- ❌ **Dangling Connections**: Failing to call `manager.disconnect()` when client drops connection.
-- ❌ **Blocking Socket Loop**: Calling synchronous `time.sleep()` inside WebSocket connection event loops.
-- ❌ **Unauthenticated WebSockets**: Accepting WebSocket connections without token parameter verification.
+## Forbidden Anti-Patterns
+- **Dangling Connections**: Failing to call `manager.disconnect()` when client drops connection.
+- **Blocking Socket Loop**: Calling synchronous `time.sleep()` inside WebSocket connection event loops.
+- **Unauthenticated WebSockets**: Accepting WebSocket connections without token parameter verification.
 
-## 🔍 Verification & Testing
+## Verification & Testing
 - **TestClient WebSocket Assertion**: Test connection and broadcast using `client.websocket_connect("/ws/notifications")` in Pytest.

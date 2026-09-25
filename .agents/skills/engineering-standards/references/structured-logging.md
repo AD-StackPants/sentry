@@ -1,9 +1,9 @@
-## 📌 Core Philosophy & Constraints
+## Core Philosophy & Constraints
 - **Strict JSON Format**: Production logs MUST be emitted as single-line JSON objects to standard output.
 - **Mandatory Fields**: Every log entry MUST include `timestamp` (ISO-8601), `level`, `event`, and `correlation_id`.
 - **Sensitive Data Masking**: Passwords, API tokens, credit cards, and PII MUST NEVER be logged.
 
-## ⚡ Production Boilerplate / Standard Pattern
+## Production Boilerplate / Standard Pattern
 
 ### Python Structlog Production Setup
 ```python
@@ -36,11 +36,11 @@ logger.info(
 )
 ```
 
-## 🚫 Forbidden Anti-Patterns
-- ❌ **Unstructured Console Logs**: Using `print()`, `console.log()`, or `echo` in production code.
-- ❌ **String Concatenation in Logs**: Formatting message strings (`logger.info(f"User {id} logged in")`) instead of passing key-value kwargs.
-- ❌ **Logging Secrets**: Emitting bearer tokens, authorization headers, or database connection strings.
+## Forbidden Anti-Patterns
+- **Unstructured Console Logs**: Using `print()`, `console.log()`, or `echo` in production code.
+- **String Concatenation in Logs**: Formatting message strings (`logger.info(f"User {id} logged in")`) instead of passing key-value kwargs.
+- **Logging Secrets**: Emitting bearer tokens, authorization headers, or database connection strings.
 
-## 🔍 Verification & Testing
+## Verification & Testing
 - **JSON Validator Test**: Assert stdout lines parse as valid JSON objects.
 - **Log Masking Test**: Unit test verifying sensitive context variables are scrubbed prior to emission.

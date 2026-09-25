@@ -1,14 +1,14 @@
-## 📌 Core Philosophy & Constraints
+## Core Philosophy & Constraints
 - **Traefik Reverse Proxy**: Route inbound HTTP/HTTPS traffic to containers via dynamic Traefik container labels.
 - **Automated SSL/TLS (Let's Encrypt)**: Generate HTTPS certificates automatically using Traefik ACME integration.
 - **Isolated Overlay Network**: Route web traffic over a shared `proxy_net` bridge network.
 
-## ⚡ Production Boilerplate / Standard Pattern
+## Production Boilerplate / Standard Pattern
 
 ```yaml
 # docker-compose.prod.yml (Traefik + Stack)
 services:
-  traefik:
+ traefik:
     image: traefik:v3.0
     command:
       - "--providers.docker=true"
@@ -27,7 +27,7 @@ services:
     networks:
       - proxy_net
 
-  api:
+ api:
     image: my-app:latest
     labels:
       - "traefik.enable=true"
@@ -40,18 +40,18 @@ services:
       - backend_net
 
 networks:
-  proxy_net:
-  backend_net:
+ proxy_net:
+ backend_net:
     internal: true
 
 volumes:
-  traefik_letsencrypt:
+ traefik_letsencrypt:
 ```
 
-## 🚫 Forbidden Anti-Patterns
-- ❌ **Exposing Socket Read-Write**: Mounting `/var/run/docker.sock` without `:ro` read-only flag.
-- ❌ **Exposing Databases Directly**: Exposing Postgres or Redis ports `5432:5432` publicly in production compose stacks.
-- ❌ **Disabling ACME Certificates**: Running HTTP-only Traefik in production setups.
+## Forbidden Anti-Patterns
+- **Exposing Socket Read-Write**: Mounting `/var/run/docker.sock` without `:ro` read-only flag.
+- **Exposing Databases Directly**: Exposing Postgres or Redis ports `5432:5432` publicly in production compose stacks.
+- **Disabling ACME Certificates**: Running HTTP-only Traefik in production setups.
 
-## 🔍 Verification & Testing
+## Verification & Testing
 - **Traefik SSL Test**: Send `curl -I https://api.yourdomain.com` verifying valid Let's Encrypt TLS certificate return.
