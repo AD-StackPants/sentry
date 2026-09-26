@@ -1,4 +1,19 @@
+import {
+  getDummyLogs,
+  getDummyLog,
+  createDummyLog,
+  deleteDummyLog,
+  getDummyStats,
+  getDummyTrends,
+  getDummyIssues,
+  getDummyAuditIssues,
+  exportDummyAuditPdf,
+  getDummyAlerts,
+  getDummyReports,
+} from "./dummyData";
+
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+export const isDemoMode = import.meta.env.VITE_APP_ENV === "demo";
 
 export interface Log {
   id: string;
@@ -7,7 +22,7 @@ export interface Log {
   level: string;
   log_message: string;
   trace_id?: string;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
   created_at: string;
 }
 
@@ -98,7 +113,9 @@ export async function fetchApi<T>(path: string, options?: RequestInit): Promise<
     try {
       const err = await response.json();
       errorDetail = err.detail || errorDetail;
-    } catch (_) {}
+    } catch {
+      // Ignore JSON parse failure and fallback to default errorDetail
+    }
     throw new Error(errorDetail);
   }
 
@@ -107,6 +124,9 @@ export async function fetchApi<T>(path: string, options?: RequestInit): Promise<
 
 export const api = {
   getLogs: (service?: string, level?: string): Promise<Log[]> => {
+    if (isDemoMode) {
+      return getDummyLogs(service, level);
+    }
     const params = new URLSearchParams();
     if (service) params.append("service", service);
     if (level) params.append("level", level);
@@ -115,10 +135,16 @@ export const api = {
   },
 
   getLog: (id: string): Promise<Log> => {
+    if (isDemoMode) {
+      return getDummyLog(id);
+    }
     return fetchApi<Log>(`/logs/${id}`);
   },
 
   createLog: (log: Omit<Log, "id" | "created_at">): Promise<Log> => {
+    if (isDemoMode) {
+      return createDummyLog(log);
+    }
     return fetchApi<Log>("/logs", {
       method: "POST",
       body: JSON.stringify(log),
@@ -126,24 +152,39 @@ export const api = {
   },
 
   deleteLog: (id: string): Promise<{ status: string }> => {
+    if (isDemoMode) {
+      return deleteDummyLog(id);
+    }
     return fetchApi<{ status: string }>(`/logs/${id}`, {
       method: "DELETE",
     });
   },
 
   getStats: (): Promise<Stats> => {
+    if (isDemoMode) {
+      return getDummyStats();
+    }
     return fetchApi<Stats>("/logs/stats");
   },
 
   getTrends: (): Promise<TrendPoint[]> => {
+    if (isDemoMode) {
+      return getDummyTrends();
+    }
     return fetchApi<TrendPoint[]>("/logs/trends");
   },
 
   getIssues: (): Promise<Issue[]> => {
+    if (isDemoMode) {
+      return getDummyIssues();
+    }
     return fetchApi<Issue[]>("/logs/issues");
   },
 
   getAuditIssues: (filters?: { id?: string; severity?: string; category?: string; endpoint?: string }): Promise<AuditIssue[]> => {
+    if (isDemoMode) {
+      return getDummyAuditIssues(filters);
+    }
     const params = new URLSearchParams();
     if (filters) {
       if (filters.id) params.append("id", filters.id);
@@ -155,7 +196,10 @@ export const api = {
     return fetchApi<AuditIssue[]>(`/issues${queryString}`);
   },
 
-  exportAuditPdf: async (payload: { filters?: Record<string, any>; date_range?: Record<string, string>; issue_ids?: string[] }): Promise<Blob> => {
+  exportAuditPdf: async (payload: { filters?: Record<string, unknown>; date_range?: Record<string, string>; issue_ids?: string[] }): Promise<Blob> => {
+    if (isDemoMode) {
+      return exportDummyAuditPdf();
+    }
     const response = await fetch(`${API_BASE_URL}/audit/export/pdf`, {
       method: "POST",
       headers: {
@@ -170,10 +214,17 @@ export const api = {
   },
 
   getAlerts: (): Promise<Alert[]> => {
+    if (isDemoMode) {
+      return getDummyAlerts();
+    }
     return fetchApi<Alert[]>("/logs/alerts");
   },
 
   getReports: (): Promise<Report[]> => {
+    if (isDemoMode) {
+      return getDummyReports();
+    }
     return fetchApi<Report[]>("/logs/reports");
   },
 };
+

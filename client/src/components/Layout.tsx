@@ -3,6 +3,7 @@ import { NavLink, Outlet } from "react-router-dom";
 import { routes } from "@/routes/manifest";
 
 import AppLogo from "@/components/AppLogo";
+import { isDemoMode } from "@/lib/api";
 
 import {
   LayoutDashboard,
@@ -99,6 +100,11 @@ export default function Layout() {
       {/* Main content */}
       <div className="app-shell-main">
         <header className="app-shell-header justify-end" role="banner">
+          {isDemoMode && (
+            <span className="badge badge-warning badge-mono text-[10px] mr-3">
+              DEMO MODE
+            </span>
+          )}
           <span className="flex items-center gap-1.5 text-[10px] font-mono text-neutral-foreground">
             <span
               className="badge-dot badge-dot-success"
