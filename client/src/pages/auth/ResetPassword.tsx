@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { RefreshCw } from "lucide-react";
+import { CheckCircle2, Loader2 } from "lucide-react";
 import { routes } from "@/routes/manifest";
 import AppLogo from "@/components/AppLogo";
-import { Badge } from "@/components/ui/badge";
 
 export default function ResetPassword() {
   useEffect(() => {
@@ -21,9 +20,7 @@ export default function ResetPassword() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [authStep, setAuthStep] = useState<
-    "idle" | "updating" | "success font-sans"
-  >("idle");
+  const [authStep, setAuthStep] = useState<"idle" | "updating" | "success">("idle");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,73 +31,69 @@ export default function ResetPassword() {
     setIsSubmitting(true);
     setAuthStep("updating");
     setTimeout(() => {
-      setAuthStep("success font-sans");
+      setAuthStep("success");
       setIsSubmitting(false);
     }, 1500);
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground font-sans antialiased flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative">
-      {/* Background radial glow */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(85,255,255,0.05),transparent_50%)] pointer-events-none" />
-
-      <div className="sm:mx-auto sm:w-full sm:max-w-md relative flex justify-center items-center mb-6 gap-2">
+    <div className="min-h-screen bg-background text-foreground font-sans antialiased flex flex-col items-center justify-center py-12 px-4">
+      <div className="flex items-center gap-2.5 mb-8">
         <AppLogo />
-
-        <Badge
-          variant="outline"
-          className="text-[9px] font-mono py-0 px-2 rounded-full border-border text-muted-foreground bg-muted"
-        >
-          v0.1.0 - PRE-ALPHA
-        </Badge>
+        <span className="badge badge-neutral badge-mono">v0.1.0 · pre-alpha</span>
       </div>
 
-      <div className="mt-2 sm:mx-auto sm:w-full sm:max-w-md relative">
-        <div className="card bg-card border-border shadow-2xl backdrop-blur">
+      <div className="w-full max-w-md">
+        <div className="card">
           {authStep === "idle" && (
             <form onSubmit={handleSubmit}>
               <div className="card-header">
-                <h3 className="card-title text-xl font-bold font-sans">
-                  Reset password
-                </h3>
-                <p className="card-description text-xs mt-1">
+                <h1 className="card-title text-base">Reset password</h1>
+                <p className="card-description">
                   Define a new secure password for{" "}
-                  <span className="text-foreground font-semibold">
-                    {emailParam}
-                  </span>
-                  .
+                  {emailParam && (
+                    <span className="text-foreground font-semibold">{emailParam}</span>
+                  )}.
                 </p>
               </div>
 
               <div className="card-content flex flex-col gap-4">
                 <div className="form-group">
-                  <label className="form-label">New Password</label>
+                  <label htmlFor="reset-password" className="form-label">
+                    New Password
+                  </label>
                   <input
+                    id="reset-password"
                     type="password"
                     required
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className="form-input"
+                    autoComplete="new-password"
                   />
                 </div>
 
                 <div className="form-group">
-                  <label className="form-label">Confirm Password</label>
+                  <label htmlFor="reset-confirm" className="form-label">
+                    Confirm Password
+                  </label>
                   <input
+                    id="reset-confirm"
                     type="password"
                     required
                     placeholder="••••••••"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     className="form-input"
+                    autoComplete="new-password"
                   />
                 </div>
 
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="button button-primary w-full mt-2"
+                  className="button button-primary w-full cursor-pointer"
                 >
                   Reset Password
                 </button>
@@ -109,36 +102,34 @@ export default function ResetPassword() {
           )}
 
           {authStep === "updating" && (
-            <div className="card-content flex flex-col items-center justify-center py-10 text-center gap-4">
-              <RefreshCw className="h-10 w-10 animate-spin text-accent" />
+            <div className="card-content flex flex-col items-center justify-center py-12 text-center gap-4">
+              <div className="icon-box w-12 h-12 rounded-xl">
+                <Loader2 className="h-5 w-5 animate-spin" />
+              </div>
               <div className="space-y-1">
-                <h4 className="font-semibold text-foreground">
-                  Updating security profiles...
-                </h4>
-                <p className="text-xs text-muted-foreground font-mono">
+                <h4 className="font-semibold text-foreground text-sm">Updating security profiles...</h4>
+                <p className="text-xs text-neutral-foreground font-mono">
                   Hashing new credential payload values
                 </p>
               </div>
             </div>
           )}
 
-          {authStep === "success font-sans" && (
-            <div className="card-content text-center py-6 space-y-6">
-              <div className="h-12 w-12 bg-success/10 border border-success/20 rounded-full flex items-center justify-center mx-auto text-success">
-                ✓
+          {authStep === "success" && (
+            <div className="card-content text-center py-10 flex flex-col items-center gap-5">
+              <div className="icon-box icon-box-emerald w-12 h-12 rounded-xl">
+                <CheckCircle2 className="h-5 w-5" />
               </div>
               <div className="space-y-2">
-                <h3 className="text-lg font-bold text-foreground font-sans">
-                  Password Updated
-                </h3>
-                <p className="text-xs text-muted-foreground leading-relaxed max-w-sm mx-auto">
+                <h3 className="text-base font-bold text-foreground">Password Updated</h3>
+                <p className="text-xs text-neutral-foreground leading-relaxed max-w-sm mx-auto">
                   Your security credentials have been refreshed. You can now use
                   your new password to sign into the system console.
                 </p>
               </div>
               <Link
                 to={routes.login.path}
-                className="button button-primary w-full inline-flex justify-center"
+                className="button button-primary w-full justify-center"
               >
                 Sign In
               </Link>

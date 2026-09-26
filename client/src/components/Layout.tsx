@@ -1,12 +1,10 @@
 import { useState, useEffect } from "react";
-import { NavLink, Outlet, useLocation } from "react-router-dom";
+import { NavLink, Outlet } from "react-router-dom";
 import { routes } from "@/routes/manifest";
 
 import AppLogo from "@/components/AppLogo";
-import { Badge } from "@/components/ui/badge";
 
 import {
-  Terminal,
   LayoutDashboard,
   Database,
   AlertTriangle,
@@ -16,8 +14,15 @@ import {
   Moon,
 } from "lucide-react";
 
+const NAV_ITEMS = [
+  { to: routes.dashboard.path, label: "Dashboard", Icon: LayoutDashboard, end: true },
+  { to: routes.logs.path, label: "Explorer", Icon: Database },
+  { to: routes.issues.path, label: "Issues", Icon: AlertTriangle },
+  { to: routes.alerts.path, label: "Alerts", Icon: Bell },
+  { to: routes.reports.path, label: "Reports", Icon: FileText },
+];
+
 export default function Layout() {
-  const location = useLocation();
   const [isDark, setIsDark] = useState(() => {
     return (
       document.documentElement.classList.contains("dark") ||
@@ -37,72 +42,33 @@ export default function Layout() {
 
   return (
     <div className="app-shell">
-      {/* Sidebar Section */}
+      {/* Sidebar */}
       <div className="app-shell-sidebar">
         <aside className="sidebar">
-          <div className="sidebar-header flex items-center justify-between">
+          <div className="sidebar-header">
             <AppLogo />
+            <span className="badge badge-neutral badge-mono hidden lg:inline-flex">
+              v0.1.0
+            </span>
           </div>
 
           <div className="sidebar-content">
-            <nav>
+            <nav aria-label="Primary navigation">
               <ul className="sidebar-menu">
-                <li>
-                  <NavLink
-                    to={routes.dashboard.path}
-                    className={({ isActive }) =>
-                      `sidebar-item${isActive ? " active" : ""}`
-                    }
-                    end
-                  >
-                    <LayoutDashboard className="h-4 w-4" />
-                    <span>Dashboard</span>
-                  </NavLink>
-                </li>
-                <li>
-                  <NavLink
-                    to={routes.logs.path}
-                    className={({ isActive }) =>
-                      `sidebar-item${isActive ? " active" : ""}`
-                    }
-                  >
-                    <Database className="h-4 w-4" />
-                    <span>Explorer</span>
-                  </NavLink>
-                </li>
-                <li>
-                  <NavLink
-                    to={routes.issues.path}
-                    className={({ isActive }) =>
-                      `sidebar-item${isActive ? " active" : ""}`
-                    }
-                  >
-                    <AlertTriangle className="h-4 w-4" />
-                    <span>Issues</span>
-                  </NavLink>
-                </li>
-                <li>
-                  <NavLink
-                    to={routes.alerts.path}
-                    className={({ isActive }) =>
-                      `sidebar-item${isActive ? " active" : ""}`
-                    }
-                  >
-                    <Bell className="h-4 w-4" />
-                    <span>Alerts</span>
-                  </NavLink>
-                </li>
-                <li>
-                  <NavLink
-                    to={routes.reports.path}
-                    className={({ isActive }) =>
-                      `sidebar-item${isActive ? " active" : ""}`
-                    }
-                  >
-                    <FileText className="h-4 w-4" />
-                    <span>Reports</span>
-                  </NavLink>
-                </li>
+                {NAV_ITEMS.map(({ to, label, Icon, end }) => (
+                  <li key={to}>
+                    <NavLink
+                      to={to}
+                      end={end}
+                      className={({ isActive }) =>
+                        `sidebar-item${isActive ? " active" : ""}`
+                      }
+                    >
+                      <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
+                      <span>{label}</span>
+                    </NavLink>
+                  </li>
+                ))}
               </ul>
             </nav>
           </div>
@@ -112,15 +78,16 @@ export default function Layout() {
               onClick={() => setIsDark(!isDark)}
               className="sidebar-item w-full justify-start cursor-pointer border-none bg-transparent text-left"
               type="button"
+              aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
             >
               {isDark ? (
                 <>
-                  <Sun className="h-4 w-4 text-warning" />
+                  <Sun className="h-4 w-4 shrink-0" style={{ color: "var(--warning)" }} aria-hidden="true" />
                   <span>Light Mode</span>
                 </>
               ) : (
                 <>
-                  <Moon className="h-4 w-4 text-muted-foreground" />
+                  <Moon className="h-4 w-4 shrink-0" aria-hidden="true" />
                   <span>Dark Mode</span>
                 </>
               )}
@@ -129,27 +96,19 @@ export default function Layout() {
         </aside>
       </div>
 
-      {/* Main Content Area */}
+      {/* Main content */}
       <div className="app-shell-main">
-        <header className="app-shell-header justify-between">
-          <div className="flex items-center gap-2">
-            <Terminal className="h-5 w-5 text-accent" />
-            <h1 className="font-semibold text-[10px] capitalize">
-              {location.pathname === routes.dashboard.path
-                ? "Overview Dashboard"
-                : location.pathname.substring(1)}
-            </h1>
-          </div>
-
-          <Badge
-            variant="outline"
-            className="text-[9px] font-mono py-0 px-2 rounded-full border-border text-muted-foreground bg-muted"
-          >
-            v0.1.0 - PRE-ALPHA
-          </Badge>
+        <header className="app-shell-header justify-end" role="banner">
+          <span className="flex items-center gap-1.5 text-[10px] font-mono text-neutral-foreground">
+            <span
+              className="badge-dot badge-dot-success"
+              aria-label="System operational"
+            />
+            Operational
+          </span>
         </header>
 
-        <main className="app-shell-content">
+        <main className="app-shell-content" id="main-content">
           <Outlet />
         </main>
       </div>

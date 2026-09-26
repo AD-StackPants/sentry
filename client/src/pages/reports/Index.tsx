@@ -36,7 +36,7 @@ export default function ReportsList() {
   if (loading) {
     return (
       <div className="flex h-64 items-center justify-center">
-        <RefreshCw className="h-8 w-8 animate-spin text-accent" />
+        <RefreshCw className="h-6 w-6 animate-spin" style={{ color: "var(--primary)" }} />
       </div>
     );
   }
@@ -45,8 +45,8 @@ export default function ReportsList() {
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold tracking-tight">Reliability & SLA Reports</h2>
-          <p className="text-muted-foreground text-sm">
+          <h2 className="text-lg font-bold tracking-tight">Reliability & SLA Reports</h2>
+          <p className="text-neutral-foreground text-sm">
             Auditable system reliability, incident summaries, and service level agreements (SLA) status.
           </p>
         </div>
@@ -65,50 +65,50 @@ export default function ReportsList() {
         {reports.map((report) => (
           <div key={report.id} className="card p-6 gap-4">
             <div className="flex items-start justify-between">
-              <div className="flex items-center gap-2.5">
-                <div className="p-2 bg-accent/10 rounded-lg text-accent border border-accent/20">
-                  <FileText className="h-5 w-5" />
+              <div className="flex items-center gap-3">
+                <div className="icon-box shrink-0">
+                  <FileText className="h-4 w-4" aria-hidden="true" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-lg">{report.title}</h3>
-                  <div className="flex items-center gap-1 text-xs text-muted-foreground mt-0.5">
-                    <Calendar className="h-3.5 w-3.5" />
+                  <h3 className="font-bold text-sm text-foreground">{report.title}</h3>
+                  <div className="flex items-center gap-1 text-xs text-neutral-foreground mt-0.5">
+                    <Calendar className="h-3 w-3" aria-hidden="true" />
                     <span>Period: {report.period}</span>
                   </div>
                 </div>
               </div>
-              <span className="text-xs font-mono px-2.5 py-1 bg-muted rounded border text-muted-foreground">
+              <span className="badge badge-neutral badge-mono">
                 {report.id}
               </span>
             </div>
 
             {/* Metrics Breakdown Grid */}
-            <div className="grid grid-cols-3 gap-4 py-2">
-              <div className="p-3 bg-muted/30 border rounded-lg text-center">
-                <span className="text-[10px] text-muted-foreground block uppercase font-semibold">
+            <div className="grid grid-cols-3 gap-3">
+              <div className="card-well p-3 text-center">
+                <span className="text-[10px] text-neutral-foreground block uppercase tracking-wider font-bold">
                   Total Events
                 </span>
-                <span className="text-lg font-bold mt-1 block">
+                <span className="stat-value text-lg mt-1 block">
                   {report.total_events}
                 </span>
               </div>
-              <div className="p-3 bg-muted/30 border rounded-lg text-center">
-                <span className="text-[10px] text-muted-foreground block uppercase font-semibold">
+              <div className="card-well p-3 text-center">
+                <span className="text-[10px] text-neutral-foreground block uppercase tracking-wider font-bold">
                   Incidents
                 </span>
                 <span
-                  className={`text-lg font-bold mt-1 block ${
+                  className={`stat-value text-lg mt-1 block ${
                     report.incidents_count > 0 ? "text-danger" : "text-success"
                   }`}
                 >
                   {report.incidents_count}
                 </span>
               </div>
-              <div className="p-3 bg-muted/30 border rounded-lg text-center">
-                <span className="text-[10px] text-muted-foreground block uppercase font-semibold">
+              <div className="card-well p-3 text-center">
+                <span className="text-[10px] text-neutral-foreground block uppercase tracking-wider font-bold">
                   Avg MTTR
                 </span>
-                <span className="text-lg font-bold mt-1 block font-mono">
+                <span className="stat-value text-lg mt-1 block font-mono">
                   {report.avg_mttr}
                 </span>
               </div>
@@ -116,7 +116,7 @@ export default function ReportsList() {
 
             {/* Service Uptime Table */}
             <div>
-              <span className="text-xs font-semibold text-muted-foreground uppercase block mb-2">
+              <span className="text-[10px] font-bold text-neutral-foreground uppercase tracking-wider block mb-2">
                 Service SLA Uptime
               </span>
               <div className="table-container">
@@ -134,7 +134,7 @@ export default function ReportsList() {
                       return (
                         <tr key={node}>
                           <td className="font-semibold">{node}</td>
-                          <td className="text-right font-mono text-muted-foreground">99.90%</td>
+                          <td className="text-right font-mono text-neutral-foreground">99.90%</td>
                           <td
                             className={`text-right font-bold font-mono ${
                               parseFloat(uptimeStr) >= 99.9
@@ -155,8 +155,8 @@ export default function ReportsList() {
             </div>
 
             {/* Summary Comments */}
-            <div className="p-3 bg-card border rounded-lg text-xs italic text-muted-foreground leading-relaxed">
-              <strong>Executive Summary:</strong> {report.summary}
+            <div className="card-well p-3 text-xs italic text-neutral-foreground leading-relaxed">
+              <strong className="not-italic font-semibold text-foreground">Executive Summary:</strong>{" "}{report.summary}
             </div>
           </div>
         ))}

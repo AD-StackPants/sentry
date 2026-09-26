@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { RefreshCw } from "lucide-react";
+import { Loader2, Mail } from "lucide-react";
 import { routes } from "@/routes/manifest";
 import AppLogo from "@/components/AppLogo";
-import { Badge } from "@/components/ui/badge";
 
 export default function ForgotPassword() {
   useEffect(() => {
@@ -17,81 +16,66 @@ export default function ForgotPassword() {
 
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [authStep, setAuthStep] = useState<
-    "idle" | "verifying" | "success font-sans"
-  >("idle");
+  const [authStep, setAuthStep] = useState<"idle" | "verifying" | "success">("idle");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setAuthStep("verifying");
     setTimeout(() => {
-      setAuthStep("success font-sans");
+      setAuthStep("success");
       setIsSubmitting(false);
     }, 1500);
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground font-sans antialiased flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(85,255,255,0.05),transparent_50%)] pointer-events-none" />
-
-      <div className="sm:mx-auto sm:w-full sm:max-w-md relative flex justify-center items-center mb-6 gap-2">
+    <div className="min-h-screen bg-background text-foreground font-sans antialiased flex flex-col items-center justify-center py-12 px-4">
+      <div className="flex items-center gap-2.5 mb-8">
         <AppLogo />
-
-        <Badge
-          variant="outline"
-          className="text-[9px] font-mono py-0 px-2 rounded-full border-border text-muted-foreground bg-muted"
-        >
-          v0.1.0 - PRE-ALPHA
-        </Badge>
+        <span className="badge badge-neutral badge-mono">v0.1.0 · pre-alpha</span>
       </div>
 
-      <div className="mt-2 sm:mx-auto sm:w-full sm:max-w-md relative">
-        <div className="card bg-card border-border shadow-2xl backdrop-blur">
+      <div className="w-full max-w-md">
+        <div className="card">
           {authStep === "idle" && (
             <form onSubmit={handleSubmit}>
-              <div className="card-header space-y-2">
-                <h2 className="text-2xl font-bold tracking-tight text-foreground font-sans">
-                  Recover Password
-                </h2>
-                <p className="text-xs text-muted-foreground leading-relaxed">
-                  Enter your email address and we will forward a temporary link
-                  to reset your password.
+              <div className="card-header">
+                <h1 className="card-title text-base">Recover password</h1>
+                <p className="card-description">
+                  Enter your email address and we'll forward a temporary reset link.
                 </p>
               </div>
 
-              <div className="card-content space-y-4">
-                <div className="form-group space-y-1.5">
-                  <label
-                    htmlFor="email"
-                    className="form-label text-xs font-semibold text-muted-foreground uppercase tracking-wider"
-                  >
+              <div className="card-content flex flex-col gap-4">
+                <div className="form-group">
+                  <label htmlFor="forgot-email" className="form-label">
                     Email Address
                   </label>
                   <input
-                    id="email"
+                    id="forgot-email"
                     type="email"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="form-control w-full px-3 py-2 text-sm bg-background border border-border rounded-md text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring focus:border-ring transition-all"
+                    className="form-input"
                     placeholder="name@example.com"
                     disabled={isSubmitting}
+                    autoComplete="email"
                   />
                 </div>
 
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="button button-primary w-full py-2.5 text-sm font-semibold rounded-md shadow transition-all flex items-center justify-center gap-2 cursor-pointer"
+                  className="button button-primary w-full cursor-pointer"
                 >
                   Send Recovery Link
                 </button>
 
-                <div className="text-center pt-2">
+                <div className="text-center">
                   <Link
                     to={routes.login.path}
-                    className="text-xs font-medium text-accent hover:underline"
+                    className="text-xs font-medium text-primary hover:underline"
                   >
                     Return to sign in
                   </Link>
@@ -101,45 +85,42 @@ export default function ForgotPassword() {
           )}
 
           {authStep === "verifying" && (
-            <div className="card-content py-12 flex flex-col items-center justify-center space-y-4">
-              <RefreshCw className="h-10 w-10 animate-spin text-accent" />
+            <div className="card-content py-12 flex flex-col items-center justify-center gap-4">
+              <div className="icon-box w-12 h-12 rounded-xl">
+                <Loader2 className="h-5 w-5 animate-spin" />
+              </div>
               <div className="text-center space-y-1">
-                <p className="text-sm font-semibold text-foreground font-sans">
-                  Dispatching Email Link
-                </p>
-                <p className="text-xs text-muted-foreground font-mono">
+                <p className="text-sm font-semibold text-foreground">Dispatching Email Link</p>
+                <p className="text-xs text-neutral-foreground font-mono">
                   Signing validation hashes for security link
                 </p>
               </div>
             </div>
           )}
 
-          {authStep === "success font-sans" && (
-            <div className="card-content text-center py-6 space-y-6">
-              <div className="h-12 w-12 bg-muted border border-border rounded-full flex items-center justify-center mx-auto text-foreground">
-                ✉
+          {authStep === "success" && (
+            <div className="card-content text-center py-10 flex flex-col items-center gap-5">
+              <div className="icon-box w-12 h-12 rounded-xl">
+                <Mail className="h-5 w-5" />
               </div>
               <div className="space-y-2">
-                <h3 className="text-lg font-bold text-foreground font-sans">
-                  Recovery Link Forwarded
-                </h3>
-                <p className="text-xs text-muted-foreground leading-relaxed max-w-sm mx-auto">
+                <h3 className="text-base font-bold text-foreground">Recovery Link Forwarded</h3>
+                <p className="text-xs text-neutral-foreground leading-relaxed max-w-sm mx-auto">
                   A reset link has been dispatched to{" "}
-                  <span className="text-foreground font-semibold">{email}</span>
-                  . Click on the link inside the message to define a new
-                  password.
+                  <span className="text-foreground font-semibold">{email}</span>.
+                  Click the link inside the message to define a new password.
                 </p>
               </div>
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-col gap-2 w-full">
                 <Link
                   to={`${routes.resetPassword.path}?email=${encodeURIComponent(email)}`}
-                  className="button button-primary w-full inline-flex justify-center"
+                  className="button button-primary w-full justify-center"
                 >
-                  Proceed to Reset Password Page
+                  Proceed to Reset Password
                 </Link>
                 <Link
                   to={routes.login.path}
-                  className="text-xs text-muted-foreground hover:text-foreground transition-colors py-1"
+                  className="text-xs text-neutral-foreground hover:text-foreground transition-colors py-1 text-center"
                 >
                   Return to sign in
                 </Link>

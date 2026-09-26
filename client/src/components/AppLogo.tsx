@@ -5,12 +5,13 @@ export default function AppLogo() {
   return (
     <Link
       to={routes.home.path}
-      className="flex items-center gap-0.5 hover:opacity-90 transition-opacity"
+      className="flex items-center gap-0.5 hover:opacity-85 transition-opacity"
+      aria-label="AD. Sentry — home"
     >
-      <span className="text-lg font-bold tracking-tighter">
-        AD<span className="text-accent">.</span>
+      <span className="text-sm font-bold tracking-tight text-foreground">
+        AD<span style={{ color: "var(--primary)" }}>.</span>
       </span>
-      <span className="text-lg font-bold tracking-tighter text-accent">
+      <span className="text-sm font-bold tracking-tight" style={{ color: "var(--primary)" }}>
         Sentry
       </span>
     </Link>

@@ -1,116 +1,142 @@
 @import "tailwindcss";
 
-/* Imports all components and links theme variables to Tailwind v4 */
-@import "@ad-technology-inc/design-system/app.css";
-
+/* Class-based dark mode */
 @custom-variant dark (&:is(.dark *));
 
-@import "tw-animate-css";
-@import "shadcn/tailwind.css";
+/* Design system theme tokens + all component CSS */
+@import "@ad-technology-inc/design-system/app.css";
+
+/* Additional font */
 @import "@fontsource-variable/geist";
 
+/* ─────────────────────────────────────────────────────
+   Tailwind v4 theme — maps DS tokens to Tailwind utilities
+   ───────────────────────────────────────────────────── */
 @theme inline {
+  /* Typography */
   --font-sans:
-    Inter, ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
-    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    "Geist Variable", Inter, ui-sans-serif, system-ui, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-mono:
+    "JetBrains Mono", ui-monospace, sfmono-regular, menlo, monaco, consolas,
+    "Liberation Mono", "Courier New", monospace;
 
-  --radius-lg: var(--radius);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-sm: calc(var(--radius) - 4px);
+  /* Radius — forwarded from DS tokens */
+  --radius-xl: var(--radius-xl);
+  --radius-lg: var(--radius-lg);
+  --radius-md: var(--radius-md);
+  --radius-sm: var(--radius-sm);
+  --radius-xs: var(--radius-xs);
+  --radius-full: var(--radius-full);
 
+  /* Core palette */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-
   --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
+  --color-card-foreground: var(--foreground);
+  --color-border: var(--border);
 
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-
+  /* Primary brand */
   --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-active: var(--primary-active);
   --color-primary-foreground: var(--primary-foreground);
+  --color-primary-tint: var(--primary-tint);
+  --color-primary-border: var(--primary-border);
 
+  /* Secondary */
   --color-secondary: var(--secondary);
+  --color-secondary-hover: var(--secondary-hover);
   --color-secondary-foreground: var(--secondary-foreground);
 
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
+  /* Neutral (replaces shadcn muted) */
+  --color-neutral: var(--neutral);
+  --color-neutral-hover: var(--neutral-hover);
+  --color-neutral-foreground: var(--neutral-foreground);
 
+  /* Accent */
   --color-accent: var(--accent);
   --color-accent-hover: var(--accent-hover);
   --color-accent-foreground: var(--accent-foreground);
 
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-
+  /* Semantic */
   --color-success: var(--success);
+  --color-success-hover: var(--success-hover);
   --color-success-foreground: var(--success-foreground);
+  --color-success-tint: var(--success-tint);
+  --color-success-border: var(--success-border);
 
   --color-warning: var(--warning);
+  --color-warning-hover: var(--warning-hover);
   --color-warning-foreground: var(--warning-foreground);
+  --color-warning-tint: var(--warning-tint);
+  --color-warning-border: var(--warning-border);
+
+  --color-danger: var(--danger);
+  --color-danger-hover: var(--danger-hover);
+  --color-danger-foreground: var(--danger-foreground);
+  --color-danger-tint: var(--danger-tint);
+  --color-danger-border: var(--danger-border);
 
   --color-info: var(--info);
+  --color-info-hover: var(--info-hover);
   --color-info-foreground: var(--info-foreground);
+  --color-info-tint: var(--info-tint);
+  --color-info-border: var(--info-border);
 
-  --color-danger: var(--destructive);
-  --color-danger-foreground: var(--destructive-foreground);
-
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-
-  --color-sidebar: var(--sidebar-background);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --font-heading: var(--font-sans);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
+  /* Shadows */
+  --shadow-xs: var(--shadow-xs);
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+  --shadow-xl: var(--shadow-xl);
 }
 
-/* Compatibility layer for default border color behavior in Tailwind v4 */
+/* ─────────────────────────────────────────────────────
+   Compatibility aliases — preserve Tailwind utility
+   classes used throughout the app (text-muted-foreground,
+   text-destructive, bg-muted, etc.) by forwarding to DS tokens.
+   ───────────────────────────────────────────────────── */
+:root {
+  --muted: var(--neutral);
+  --muted-foreground: var(--neutral-foreground);
+  --destructive: var(--danger);
+  --destructive-foreground: var(--danger-foreground);
+  --ring: var(--primary);
+  --input: var(--border);
+  --popover: var(--card);
+  --popover-foreground: var(--foreground);
+}
+
+/* Chart tokens (not in DS) */
+:root {
+  --chart-1: #f97316;
+  --chart-2: #10b981;
+  --chart-3: #1d4ed8;
+  --chart-4: #eab308;
+  --chart-5: #ec4899;
+}
+
+/* Base layer */
 @layer base {
   *,
   ::after,
   ::before,
   ::backdrop,
   ::file-selector-button {
-    border-color: var(--color-gray-200, currentColor);
+    border-color: var(--border);
   }
+
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
   }
+
   html {
     @apply font-sans;
-  }
-}
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-}
-
-@layer utilities {
-  .muted {
-    color: var(--muted-foreground);
   }
 }
