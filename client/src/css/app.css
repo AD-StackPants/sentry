@@ -1,28 +1,10 @@
 @import "tailwindcss";
 
+/* Imports all components and links theme variables to Tailwind v4 */
+@import "@ad-technology-inc/design-system/app.css";
+
 @custom-variant dark (&:is(.dark *));
 
-/* Theme tokens & variable defaults */
-@import "./theme/colors.css";
-@import "./theme/typography.css";
-
-/* Layout elements */
-@import "./layouts/app-shell.css";
-@import "./layouts/sidebar-layout.css";
-@import "./layouts/split-layout.css";
-
-/* Reusable components */
-@import "./components/button.css";
-@import "./components/card.css";
-@import "./components/form.css";
-@import "./components/table.css";
-@import "./components/dialog.css";
-@import "./components/navbar.css";
-@import "./components/sidebar.css";
-@import "./components/breadcrumb.css";
-@import "./components/empty-state.css";
-@import "./components/badge.css";
-@import "./components/alert.css";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/geist";

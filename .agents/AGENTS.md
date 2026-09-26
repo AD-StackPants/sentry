@@ -17,6 +17,7 @@ agent_context:
     backend_python: ".agents/skills/fastapi/"
     backend_php: ".agents/skills/laravel/"
     frontend_design: ".agents/skills/frontend-core/"
+    design_system: ".agents/skills/ad-technology-design-system/"
     frontend_react: ".agents/skills/react/"
     frontend_vue: ".agents/skills/vue/"
     containers: ".agents/skills/docker/"
@@ -27,7 +28,7 @@ agent_context:
     - Step 1 [Inspect]: Read authoritative local files and domain SKILL.md before proposing code.
     - Step 2 [Contracts]: Define strict Pydantic v2 / Form Request / Zod input-output schemas.
     - Step 3 [Domain]: Implement business logic inside isolated Service or Action classes.
-    - Step 4 [Design]: Cross-reference frontend-core for strict tokens (#1976D2, rounded-lg, shadow-xs).
+    - Step 4 [Design]: If @ad-technology-inc/design-system exists in package.json, strictly follow ad-technology-design-system; otherwise cross-reference frontend-core.
     - Step 5 [Verify]: Run static analysis (ruff, phpstan, tsc) and relevant unit/feature test suites.
 ```
 
