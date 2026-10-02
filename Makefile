@@ -13,7 +13,10 @@ down:
 
 restart: down up
 
-rebuild: down build
+rebuild:
+	docker compose down -v
+	docker compose build --no-cache
+	docker compose up -d
 
 fastapi:
 	uv --directory server run fastapi dev
