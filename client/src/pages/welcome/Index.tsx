@@ -2,6 +2,10 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { routes } from "@/routes/manifest";
 import AppLogo from "@/components/AppLogo";
+import CallToAction from "@/pages/welcome/CallToAction";
+import Faq from "@/pages/welcome/Faq";
+import Footer from "@/pages/welcome/Footer";
+
 import {
   Activity,
   AlertTriangle,
@@ -10,7 +14,6 @@ import {
   Code,
   Cpu,
   Database,
-  ExternalLink,
   FileText,
   Layers,
   Lock,
@@ -23,7 +26,12 @@ import {
 
 type DemoTab = "ingest" | "group" | "trace" | "audit";
 
-const DEMO_TABS: { id: DemoTab; label: string; Icon: typeof Database; desc: string }[] = [
+const DEMO_TABS: {
+  id: DemoTab;
+  label: string;
+  Icon: typeof Database;
+  desc: string;
+}[] = [
   {
     id: "ingest",
     label: "Asynchronous Log Ingestion",
@@ -81,14 +89,6 @@ const FEATURE_CARDS = [
     title: "Span Trace Timelines",
     desc: "Visually diagrams request-span cascades. Clearly separates network latency from application thread cycles.",
   },
-];
-
-const TECH_STACK = [
-  { name: "Python 3.12", role: "Runtime Engine" },
-  { name: "FastAPI", role: "API Gateway" },
-  { name: "PostgreSQL", role: "Event Database" },
-  { name: "Redis", role: "Cache & Limiter" },
-  { name: "React 19 + TS", role: "Client Interface" },
 ];
 
 const GUARANTEES = [
@@ -155,7 +155,7 @@ export default function Welcome() {
       </header>
 
       {/* ── Hero ── */}
-      <section className="pt-20 pb-16 md:pt-32 md:pb-24">
+      <section id="hero" className="pt-20 pb-16 md:pt-32 md:pb-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           {/* Eyebrow tag — rectangular badge per DS spec */}
           <span className="badge badge-info inline-flex items-center gap-1.5 mb-6">
@@ -165,7 +165,9 @@ export default function Welcome() {
 
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-foreground max-w-4xl mx-auto leading-none">
             Transform Raw Telemetry into{" "}
-            <span style={{ color: "var(--primary)" }}>Actionable Incidents</span>
+            <span style={{ color: "var(--primary)" }}>
+              Actionable Incidents
+            </span>
           </h1>
 
           <p className="mt-6 text-base sm:text-lg text-neutral-foreground max-w-2xl mx-auto leading-relaxed">
@@ -213,7 +215,10 @@ export default function Welcome() {
               { stat: "Real-time", label: "Issue Signature Grouping" },
             ].map(({ stat, label }) => (
               <div key={label}>
-                <div className="stat-value text-xl" style={{ color: "var(--primary)" }}>
+                <div
+                  className="stat-value text-xl"
+                  style={{ color: "var(--primary)" }}
+                >
                   {stat}
                 </div>
                 <div className="text-[10px] text-neutral-foreground mt-1 uppercase tracking-wider font-semibold">
@@ -230,7 +235,8 @@ export default function Welcome() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="flex flex-col gap-6">
             <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
-              The Observability Tax: Noise, Stale Diagnostics, and High Latencies
+              The Observability Tax: Noise, Stale Diagnostics, and High
+              Latencies
             </h2>
             <p className="text-sm text-neutral-foreground leading-relaxed">
               Standard log solutions partition raw events into massive data
@@ -254,8 +260,12 @@ export default function Welcome() {
                     <AlertTriangle className="h-3.5 w-3.5" aria-hidden="true" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-foreground text-sm">{title}</h4>
-                    <p className="text-xs text-neutral-foreground mt-0.5 leading-relaxed">{desc}</p>
+                    <h4 className="font-semibold text-foreground text-sm">
+                      {title}
+                    </h4>
+                    <p className="text-xs text-neutral-foreground mt-0.5 leading-relaxed">
+                      {desc}
+                    </p>
                   </div>
                 </div>
               ))}
@@ -282,7 +292,10 @@ export default function Welcome() {
                 "Redis Rate Limit Shielding",
               ].map((item) => (
                 <li key={item} className="flex items-center gap-2 text-sm">
-                  <CheckCircle className="h-3.5 w-3.5 shrink-0 text-success" aria-hidden="true" />
+                  <CheckCircle
+                    className="h-3.5 w-3.5 shrink-0 text-success"
+                    aria-hidden="true"
+                  />
                   <span>{item}</span>
                 </li>
               ))}
@@ -292,7 +305,7 @@ export default function Welcome() {
       </section>
 
       {/* ── Interactive Demo ── */}
-      <section className="py-16 border-y border-border bg-card">
+      <section id="demo" className="py-16 border-y border-border bg-card">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-12">
             <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">
@@ -321,9 +334,13 @@ export default function Welcome() {
                 >
                   <div className="font-semibold text-xs flex items-center gap-2">
                     <Icon className="h-4 w-4" aria-hidden="true" />
-                    <span>{idx + 1}. {label}</span>
+                    <span>
+                      {idx + 1}. {label}
+                    </span>
                   </div>
-                  <p className="text-[11px] text-neutral-foreground mt-1">{desc}</p>
+                  <p className="text-[11px] text-neutral-foreground mt-1">
+                    {desc}
+                  </p>
                 </button>
               ))}
             </div>
@@ -349,70 +366,178 @@ export default function Welcome() {
                 </span>
               </div>
 
-              <div className="space-y-2 text-neutral-foreground overflow-y-auto" style={{ maxHeight: "230px" }}>
+              <div
+                className="space-y-2 text-neutral-foreground overflow-y-auto"
+                style={{ maxHeight: "230px" }}
+              >
                 {activeTab === "ingest" && (
                   <>
-                    <p className="text-success">// Ingestion request verification</p>
+                    <p className="text-success">
+                      // Ingestion request verification
+                    </p>
                     <p>{"{"}</p>
-                    <p className="pl-4">"service": <span className="text-primary">"payment-gateway"</span>,</p>
-                    <p className="pl-4">"level": <span className="text-warning">"ERROR"</span>,</p>
-                    <p className="pl-4">"message": <span className="text-success">"Database connection timeout on pool-size 50"</span>,</p>
-                    <p className="pl-4">"span_id": <span className="text-primary">"spn_f274a"</span>,</p>
-                    <p className="pl-4">"parent_span_id": <span className="text-neutral-foreground">"spn_root"</span></p>
+                    <p className="pl-4">
+                      "service":{" "}
+                      <span className="text-primary">"payment-gateway"</span>,
+                    </p>
+                    <p className="pl-4">
+                      "level": <span className="text-warning">"ERROR"</span>,
+                    </p>
+                    <p className="pl-4">
+                      "message":{" "}
+                      <span className="text-success">
+                        "Database connection timeout on pool-size 50"
+                      </span>
+                      ,
+                    </p>
+                    <p className="pl-4">
+                      "span_id":{" "}
+                      <span className="text-primary">"spn_f274a"</span>,
+                    </p>
+                    <p className="pl-4">
+                      "parent_span_id":{" "}
+                      <span className="text-neutral-foreground">
+                        "spn_root"
+                      </span>
+                    </p>
                     <p>{"}"}</p>
-                    <p className="text-success">// Redis Rate Limiter Response</p>
+                    <p className="text-success">
+                      // Redis Rate Limiter Response
+                    </p>
                     <p className="text-foreground">HTTP/1.1 201 Created</p>
-                    <p className="text-neutral-foreground">X-RateLimit-Limit: 100 | X-RateLimit-Remaining: 99</p>
+                    <p className="text-neutral-foreground">
+                      X-RateLimit-Limit: 100 | X-RateLimit-Remaining: 99
+                    </p>
                   </>
                 )}
                 {activeTab === "group" && (
                   <>
-                    <p className="text-success">// Match signature and merge occurrences</p>
-                    <p className="text-foreground">Input Log: <span className="text-neutral-foreground">"User with ID 84729 failed checkout after 3000ms"</span></p>
-                    <p className="text-foreground">Input Log: <span className="text-neutral-foreground">"User with ID 10924 failed checkout after 1500ms"</span></p>
-                    <div className="p-2 border rounded-md mt-2" style={{ borderColor: "var(--primary-border)", background: "var(--primary-tint)", color: "var(--primary)" }}>
-                      <p className="font-semibold font-sans text-xs">Grouped Issue Match Identified:</p>
-                      <p className="mt-1">Pattern: "User with ID * failed checkout after *ms"</p>
-                      <p className="mt-0.5 text-[10px] text-neutral-foreground">Count updated: 2 events | Status: Active</p>
+                    <p className="text-success">
+                      // Match signature and merge occurrences
+                    </p>
+                    <p className="text-foreground">
+                      Input Log:{" "}
+                      <span className="text-neutral-foreground">
+                        "User with ID 84729 failed checkout after 3000ms"
+                      </span>
+                    </p>
+                    <p className="text-foreground">
+                      Input Log:{" "}
+                      <span className="text-neutral-foreground">
+                        "User with ID 10924 failed checkout after 1500ms"
+                      </span>
+                    </p>
+                    <div
+                      className="p-2 border rounded-md mt-2"
+                      style={{
+                        borderColor: "var(--primary-border)",
+                        background: "var(--primary-tint)",
+                        color: "var(--primary)",
+                      }}
+                    >
+                      <p className="font-semibold font-sans text-xs">
+                        Grouped Issue Match Identified:
+                      </p>
+                      <p className="mt-1">
+                        Pattern: "User with ID * failed checkout after *ms"
+                      </p>
+                      <p className="mt-0.5 text-[10px] text-neutral-foreground">
+                        Count updated: 2 events | Status: Active
+                      </p>
                     </div>
                   </>
                 )}
                 {activeTab === "trace" && (
                   <div className="space-y-3 font-sans">
-                    <div className="flex items-center justify-between border-l-2 pl-2" style={{ borderColor: "var(--primary)" }}>
+                    <div
+                      className="flex items-center justify-between border-l-2 pl-2"
+                      style={{ borderColor: "var(--primary)" }}
+                    >
                       <div>
-                        <span className="font-semibold text-foreground block text-xs">gateway (Root Span)</span>
-                        <span className="text-[10px] text-neutral-foreground">API GET /checkout</span>
+                        <span className="font-semibold text-foreground block text-xs">
+                          gateway (Root Span)
+                        </span>
+                        <span className="text-[10px] text-neutral-foreground">
+                          API GET /checkout
+                        </span>
                       </div>
-                      <span className="font-mono text-[10px] font-bold" style={{ color: "var(--primary)" }}>148ms</span>
+                      <span
+                        className="font-mono text-[10px] font-bold"
+                        style={{ color: "var(--primary)" }}
+                      >
+                        148ms
+                      </span>
                     </div>
-                    <div className="flex items-center justify-between border-l-2 pl-2 ml-4" style={{ borderColor: "var(--warning)" }}>
+                    <div
+                      className="flex items-center justify-between border-l-2 pl-2 ml-4"
+                      style={{ borderColor: "var(--warning)" }}
+                    >
                       <div>
-                        <span className="font-semibold text-foreground block text-xs">auth-service</span>
-                        <span className="text-[10px] text-neutral-foreground">Bearer Token Validation</span>
+                        <span className="font-semibold text-foreground block text-xs">
+                          auth-service
+                        </span>
+                        <span className="text-[10px] text-neutral-foreground">
+                          Bearer Token Validation
+                        </span>
                       </div>
-                      <span className="font-mono text-[10px] font-bold text-warning">12ms</span>
+                      <span className="font-mono text-[10px] font-bold text-warning">
+                        12ms
+                      </span>
                     </div>
-                    <div className="flex items-center justify-between border-l-2 pl-2 ml-4" style={{ borderColor: "var(--danger)" }}>
+                    <div
+                      className="flex items-center justify-between border-l-2 pl-2 ml-4"
+                      style={{ borderColor: "var(--danger)" }}
+                    >
                       <div>
-                        <span className="font-semibold text-foreground block text-xs">payment-api</span>
-                        <span className="text-[10px] font-bold text-danger">Database connection timeout</span>
+                        <span className="font-semibold text-foreground block text-xs">
+                          payment-api
+                        </span>
+                        <span className="text-[10px] font-bold text-danger">
+                          Database connection timeout
+                        </span>
                       </div>
-                      <span className="font-mono text-[10px] font-bold text-danger">136ms</span>
+                      <span className="font-mono text-[10px] font-bold text-danger">
+                        136ms
+                      </span>
                     </div>
                   </div>
                 )}
                 {activeTab === "audit" && (
                   <>
-                    <p className="text-success">// Reliability Audit Scorecard & Risk Assessment</p>
+                    <p className="text-success">
+                      // Reliability Audit Scorecard & Risk Assessment
+                    </p>
                     <p>{"{"}</p>
-                    <p className="pl-4">"reliability_score": <span className="text-success">"89.2 / 100"</span>,</p>
+                    <p className="pl-4">
+                      "reliability_score":{" "}
+                      <span className="text-success">"89.2 / 100"</span>,
+                    </p>
                     <p className="pl-4">"identified_issues": [</p>
-                    <p className="pl-8">{'{ "id": "CRI-DI-001", "category": "DI", "risk_score": 8.92 }'},</p>
-                    <p className="pl-8">{'{ "id": "CRI-SEC-001", "category": "SEC", "risk_score": 9.40 }'}</p>
+                    <p className="pl-8">
+                      {
+                        '{ "id": "CRI-DI-001", "category": "DI", "risk_score": 8.92 }'
+                      }
+                      ,
+                    </p>
+                    <p className="pl-8">
+                      {
+                        '{ "id": "CRI-SEC-001", "category": "SEC", "risk_score": 9.40 }'
+                      }
+                    </p>
                     <p className="pl-4">],</p>
-                    <p className="pl-4">"pdf_export_hash": <span style={{ color: "var(--primary)" }}>"sha256_ef920b7..."</span>,</p>
-                    <p className="pl-4">"actionable_remediation": <span className="text-warning">"Immediate: Add distributed lock on checkout endpoint."</span></p>
+                    <p className="pl-4">
+                      "pdf_export_hash":{" "}
+                      <span style={{ color: "var(--primary)" }}>
+                        "sha256_ef920b7..."
+                      </span>
+                      ,
+                    </p>
+                    <p className="pl-4">
+                      "actionable_remediation":{" "}
+                      <span className="text-warning">
+                        "Immediate: Add distributed lock on checkout endpoint."
+                      </span>
+                    </p>
                     <p>{"}"}</p>
                   </>
                 )}
@@ -429,8 +554,8 @@ export default function Welcome() {
             Built for Production Environments
           </h2>
           <p className="text-neutral-foreground mt-3 text-sm leading-relaxed">
-            Eliminate operational blindspots with lightweight, performant,
-            and zero-compromise telemetry features.
+            Eliminate operational blindspots with lightweight, performant, and
+            zero-compromise telemetry features.
           </p>
         </div>
 
@@ -443,31 +568,52 @@ export default function Welcome() {
               <div className="icon-box mb-4">
                 <Icon className="h-4 w-4" aria-hidden="true" />
               </div>
-              <h3 className="font-semibold text-foreground text-sm mb-2">{title}</h3>
-              <p className="text-xs text-neutral-foreground leading-relaxed">{desc}</p>
+              <h3 className="font-semibold text-foreground text-sm mb-2">
+                {title}
+              </h3>
+              <p className="text-xs text-neutral-foreground leading-relaxed">
+                {desc}
+              </p>
             </div>
           ))}
         </div>
       </section>
 
       {/* ── How It Works ── */}
-      <section className="py-20 border-t border-border bg-card">
+      <section id="how-it-works" className="py-20 border-t border-border bg-card">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">
               Four Steps to Full Observability
             </h2>
             <p className="text-neutral-foreground mt-2 text-sm">
-              Set up centralized instrumentation in minutes without deploying heavy sidecars.
+              Set up centralized instrumentation in minutes without deploying
+              heavy sidecars.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             {[
-              { step: "1", title: "Create Log Payload", desc: "Connect your service client to our HTTP API gateway using standard payload properties." },
-              { step: "2", title: "Configure Rule Policies", desc: "Define metric thresholds, email digest routes, and Slack hook channels in the Alerts center." },
-              { step: "3", title: "Execute Operations", desc: "Run services in staging or production. Logs stream asynchronously under rate-limit caps." },
-              { step: "4", title: "Observe Incidents", desc: "Track ingestion metrics, inspect span trace cascades, and resolve grouped issues directly." },
+              {
+                step: "1",
+                title: "Create Log Payload",
+                desc: "Connect your service client to our HTTP API gateway using standard payload properties.",
+              },
+              {
+                step: "2",
+                title: "Configure Rule Policies",
+                desc: "Define metric thresholds, email digest routes, and Slack hook channels in the Alerts center.",
+              },
+              {
+                step: "3",
+                title: "Execute Operations",
+                desc: "Run services in staging or production. Logs stream asynchronously under rate-limit caps.",
+              },
+              {
+                step: "4",
+                title: "Observe Incidents",
+                desc: "Track ingestion metrics, inspect span trace cascades, and resolve grouped issues directly.",
+              },
             ].map(({ step, title, desc }) => (
               <div key={step} className="flex flex-col gap-3">
                 <div
@@ -480,8 +626,12 @@ export default function Welcome() {
                 >
                   {step}
                 </div>
-                <h4 className="font-semibold text-foreground text-sm">{title}</h4>
-                <p className="text-xs text-neutral-foreground leading-relaxed">{desc}</p>
+                <h4 className="font-semibold text-foreground text-sm">
+                  {title}
+                </h4>
+                <p className="text-xs text-neutral-foreground leading-relaxed">
+                  {desc}
+                </p>
               </div>
             ))}
           </div>
@@ -489,7 +639,7 @@ export default function Welcome() {
       </section>
 
       {/* ── Reliability Guarantees ── */}
-      <section className="py-20 md:py-28 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section id="reliability" className="py-20 md:py-28 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">
             System & Reliability Guarantees
@@ -504,63 +654,96 @@ export default function Welcome() {
           {GUARANTEES.map(({ Icon, title, desc }) => (
             <div key={title} className="card p-5">
               <h4 className="font-semibold text-foreground text-sm flex items-center gap-2">
-                <Icon className="h-4 w-4 shrink-0" style={{ color: "var(--primary)" }} aria-hidden="true" />
+                <Icon
+                  className="h-4 w-4 shrink-0"
+                  style={{ color: "var(--primary)" }}
+                  aria-hidden="true"
+                />
                 {title}
               </h4>
-              <p className="text-xs text-neutral-foreground mt-2 leading-relaxed">{desc}</p>
+              <p className="text-xs text-neutral-foreground mt-2 leading-relaxed">
+                {desc}
+              </p>
             </div>
           ))}
         </div>
       </section>
 
       {/* ── Engineering Deep Dive ── */}
-      <section id="deep-dive" className="py-20 border-y border-border bg-card">
+      <section id="deep-dive" className="py-20 border-t border-border bg-card">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mx-auto text-center mb-16">
-            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">Engineering Deep Dive</h2>
+            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">
+              Engineering Deep Dive
+            </h2>
             <p className="text-neutral-foreground mt-2 text-sm">
-              Technical tradeoffs, performance parameters, and backend execution policies.
+              Technical tradeoffs, performance parameters, and backend execution
+              policies.
             </p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
             <div className="space-y-5">
-              <h3 className="text-base font-bold text-foreground">Asynchronous Execution Pipeline</h3>
+              <h3 className="text-base font-bold text-foreground">
+                Asynchronous Execution Pipeline
+              </h3>
               <p className="text-xs text-neutral-foreground leading-relaxed">
                 By relying exclusively on Python 3.12+ async syntax, the FastAPI
                 ingestion engine operates on an event-loop that frees the CPU to
-                handle concurrent connection polls while waiting on external database writes.
+                handle concurrent connection polls while waiting on external
+                database writes.
               </p>
               <p className="text-xs text-neutral-foreground leading-relaxed">
-                Using SQLAlchemy's <code className="font-mono bg-neutral px-1 py-0.5 rounded-sm text-foreground">AsyncSession</code> context managers,
-                sessions are bound to specific HTTP transaction lifecycles and automatically recycled
-                after request completion.
+                Using SQLAlchemy's{" "}
+                <code className="font-mono bg-neutral px-1 py-0.5 rounded-sm text-foreground">
+                  AsyncSession
+                </code>{" "}
+                context managers, sessions are bound to specific HTTP
+                transaction lifecycles and automatically recycled after request
+                completion.
               </p>
               <div className="card-well font-mono text-[11px] text-neutral-foreground p-4">
                 <p># Performance Benchmark Statistics</p>
-                <p>Concurrent Connections: <span className="text-success">10,000+ / sec</span></p>
-                <p>Ingestion Endpoint Latency (p99): <span className="text-success">4.8ms</span></p>
-                <p>Database Query Latency: <span className="text-success">0.9ms</span></p>
+                <p>
+                  Concurrent Connections:{" "}
+                  <span className="text-success">10,000+ / sec</span>
+                </p>
+                <p>
+                  Ingestion Endpoint Latency (p99):{" "}
+                  <span className="text-success">4.8ms</span>
+                </p>
+                <p>
+                  Database Query Latency:{" "}
+                  <span className="text-success">0.9ms</span>
+                </p>
               </div>
             </div>
 
             <div className="space-y-5">
-              <h3 className="text-base font-bold text-foreground">Architectural Tradeoffs</h3>
+              <h3 className="text-base font-bold text-foreground">
+                Architectural Tradeoffs
+              </h3>
               <div className="space-y-4">
                 <div>
-                  <h4 className="font-semibold text-foreground text-xs">In-Memory Logging vs. Persistent Message Queues</h4>
+                  <h4 className="font-semibold text-foreground text-xs">
+                    In-Memory Logging vs. Persistent Message Queues
+                  </h4>
                   <p className="text-xs text-neutral-foreground mt-1 leading-relaxed">
                     To maintain microsecond ingestion cycles without introducing
-                    RabbitMQ or Kafka dependencies, the platform groups log traces in memory
-                    and flushes them to the DB pool via async bulk sessions.
+                    RabbitMQ or Kafka dependencies, the platform groups log
+                    traces in memory and flushes them to the DB pool via async
+                    bulk sessions.
                   </p>
                 </div>
                 <div>
-                  <h4 className="font-semibold text-foreground text-xs">Regex Grouping Signature Performance</h4>
+                  <h4 className="font-semibold text-foreground text-xs">
+                    Regex Grouping Signature Performance
+                  </h4>
                   <p className="text-xs text-neutral-foreground mt-1 leading-relaxed">
-                    The LogService grouping engine performs regex replacement scans to scrub
-                    variable data tokens. Compiling is optimized via Python's built-in LRU
-                    caching mechanisms, avoiding regex recompilation overhead.
+                    The LogService grouping engine performs regex replacement
+                    scans to scrub variable data tokens. Compiling is optimized
+                    via Python's built-in LRU caching mechanisms, avoiding regex
+                    recompilation overhead.
                   </p>
                 </div>
               </div>
@@ -569,48 +752,11 @@ export default function Welcome() {
         </div>
       </section>
 
-      {/* ── Tech Stack ── */}
-      <section className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-3xl mx-auto mb-10">
-          <h2 className="text-2xl font-bold tracking-tight">Exactly Map Repository Technologies</h2>
-          <p className="text-neutral-foreground mt-2 text-sm">
-            We list the precise stack running inside this directory. Zero fictional integrations.
-          </p>
-        </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-          {TECH_STACK.map(({ name, role }) => (
-            <div key={name} className="card p-4 text-center">
-              <span className="font-bold text-foreground text-sm block">{name}</span>
-              <span className="badge badge-neutral badge-mono mt-2">{role}</span>
-            </div>
-          ))}
-        </div>
-      </section>
 
-      {/* ── Footer CTA ── */}
-      <footer className="border-t border-border bg-card py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
-            Ready to secure your telemetry stream?
-          </h2>
-          <p className="mt-3 text-neutral-foreground max-w-xl mx-auto text-sm leading-relaxed">
-            Gain immediate access to our low-latency console dashboard. Run,
-            simulate log loads, and audit service uptimes.
-          </p>
-          <div className="mt-8 flex justify-center gap-3">
-            <Link
-              to={routes.login.path}
-              className="button button-primary button-lg cursor-pointer"
-            >
-              Launch Dashboard
-              <ExternalLink className="h-4 w-4" aria-hidden="true" />
-            </Link>
-          </div>
-          <p className="mt-10 text-[10px] text-neutral-foreground font-mono">
-            &copy; {new Date().getFullYear()} AD. Sentry Observability Systems. All rights reserved.
-          </p>
-        </div>
-      </footer>
+      <Faq />
+
+      <CallToAction />
+      <Footer />
     </div>
   );
 }
