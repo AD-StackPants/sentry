@@ -14,6 +14,9 @@ services:
       - ./client/.env
     ports:
       - 3000:3000
+    volumes:
+      - ./client:/app
+      - /app/node_modules
     networks:
       - app
     deploy:
@@ -30,8 +33,6 @@ services:
       dockerfile: Dockerfile
     env_file:
       - ./server/.env
-    environment:
-      - DB_HOST=pgsql
     ports:
       - 3001:3001
     volumes:
@@ -39,8 +40,11 @@ services:
       - /app/.venv
     networks:
       - app
+    depends_on:
+      - pgsql
+      - redis
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:3001/healthz || exit 1"]
+      test: ["CMD", "curl", "-f", "http://localhost:3001/healthz"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -67,7 +71,7 @@ services:
       - app
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME:-postgres}"]
+      test: ["CMD", "pg_isready", "-U", "${DB_USERNAME:-postgres}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -78,7 +82,7 @@ services:
           memory: 256m
         reservations:
           memory: 128m
-          
+
   redis:
     image: redis:8.6.0-alpine3.23
     ports:
@@ -124,4 +128,3 @@ services:
   #         memory: 128m
   #       reservations:
   #         memory: 64m
-

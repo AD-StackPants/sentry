@@ -1,22 +1,17 @@
-# Tells Make that a target is a command/action to run, 
-# rather than the name of an actual file on disk.
-.PHONY: build up down restart fastapi
+.PHONY: build up down restart rebuild fastapi
 
 build:
-	docker compose up --build -d
+	docker compose build
 
 up:
-	docker compose up -d
+	docker compose --env-file ./server/.env up -d
 
 down:
 	docker compose down
 
 restart: down up
 
-rebuild:
-	docker compose down -v
-	docker compose build --no-cache
-	docker compose up -d
+rebuild: down build up
 
 fastapi:
 	uv --directory server run fastapi dev
